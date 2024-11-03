@@ -16,6 +16,30 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Docker Installation Process
+1. To build the image
+```bash
+docker build -t amazon-asambhav-app .
+```
+![installwrite](https://github.com/user-attachments/assets/3b199ee9-4643-4303-8033-b27dc2f5cb91)
+
+
+2. To run the image
+```bash
+docker run -p 3000:3000 amazon-asambhav-app
+```
+3. To stop the image
+First -> open another terminal and run docker ps take the container id from their
+```bash
+docker ps
+```
+then 
+```bash
+docker stop <container_id>
+```
+![dockerinstallimg](https://github.com/user-attachments/assets/0faf2d70-bd17-40a2-999d-dc5d23615f6a)
+
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
