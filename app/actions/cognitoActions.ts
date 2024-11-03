@@ -9,6 +9,7 @@ import {
 } from "aws-amplify/auth";
 import { getErrorMessage } from "../utils/get-error-message";
 import { checkTableExists } from "../utils/db";
+import { createUser } from "./user";
 
 interface SignupFormData {
   name: string;
@@ -48,10 +49,25 @@ export async function handleSignUp(formData: SignupFormData) {
         autoSignIn: true,
       },
     });
+
+    console.log("user_id: ", userId);
+    // Creating user entry into the database
+    await checkTableExists('User');
+
+    const entryResult = await createUser({
+      id: userId,
+      email: formData.email,
+      name: formData.name
+    });
+
+    if(entryResult.success){
+      console.log("user entered into database");
+    }
+
     return JSON.stringify({ success: true, message: "OTP sent to email" })
   } catch (error) {
     console.log(error)
-    return JSON.stringify({ success: true, error: getErrorMessage(error) })
+    return JSON.stringify({ success: false, error: getErrorMessage(error) })
   }
 }
 
@@ -82,11 +98,6 @@ export async function handleConfirmSignUp(
     try {
       await autoSignIn();
     } catch (err) {
-      await checkTableExists('User');
-
-      // Creating user entry into the database
-      
-
       return JSON.stringify({ success: true, message: "User registered successfully", redirectedFrom: 'login' })
     }
 
