@@ -2,20 +2,25 @@
 
 import { client } from '../utils/db';
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { encryptData } from '../utils/kms-encrypter';
+
 
 const docClient = DynamoDBDocumentClient.from(client);
 
+
 export async function createUser(formData){
     console.log("formData: ", formData);
+    
+    const encryptedEmail = await encryptData(formData.email)
+    const encryptedname = await encryptData(formData.name)
+
     try {
         const command = new PutCommand({
             TableName: "User",
             Item: {
                 id: formData.id,
-                email: formData.email,
-                name: formData.name,
-                // number: '0000000000',
-                // shopify_account_name: 'aaaaaa'
+                email: encryptedEmail,
+                name: encryptedname,
             },
         });
     

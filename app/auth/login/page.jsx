@@ -47,6 +47,11 @@ export default function Login() {
       }else if(responseObj.error === "User is not verified"){
         setUserSignupEmail(formData.email)
         router.push('/auth/confirm-email')
+      }else if(responseObj.error === "NotAuthorizedException"){
+        setErrors({
+          password: "Wrong username or password",
+          email: "Wrong username or password" 
+        })
       }else{
         console.log("Can't login user: ", responseObj.error);
       }
@@ -102,7 +107,7 @@ export default function Login() {
                     Remember me
                   </label>
                 </div>
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:underline">
                   Forgot password?
                 </Link>
               </div>
