@@ -6,6 +6,10 @@ import {
   signOut,
   resendSignUpCode,
   autoSignIn,
+  resetPassword,
+  confirmResetPassword,
+  ResetPasswordInput,
+  ConfirmResetPasswordInput
 } from "aws-amplify/auth";
 import { getErrorMessage } from "../utils/get-error-message";
 import { checkTableExists } from "../utils/db";
@@ -122,13 +126,13 @@ export async function handleSignIn(
       await resendSignUpCode({
         username: String(formData.email),
       });
-      return JSON.stringify({ success: false, error: "User is not verified" })
+      return JSON.stringify({ success: false, error: "User is not verified" });
     }
 
-    return JSON.stringify({ success: true, message: "User logged in successfully" })
+    return JSON.stringify({ success: true, message: "User logged in successfully" });
   } catch (error) {
     console.log(error);
-    return JSON.stringify({ success: true, error: getErrorMessage(error) })
+    return JSON.stringify({ success: false, error: error.name });
   }
 
 }
@@ -141,4 +145,26 @@ export async function handleSignOut() {
     console.log(getErrorMessage(error));
   }
   redirect("/auth/login");
+}
+
+// Function to initiate reset password
+export async function resetPass(formData: ResetPasswordInput) {
+  try {
+    await resetPassword(formData);
+    return JSON.stringify({ success: true, message: "OTP sent to email" });
+  } catch (error) {
+    console.error('Error initiating password reset:', error);
+    return JSON.stringify({ success: false, error: `Failed to initiate password reset: ${error}` });
+  }
+}
+
+// Function to reset password
+export async function confirmResetPass(formData: ConfirmResetPasswordInput) {
+  try {
+    await confirmResetPassword(formData);
+    return JSON.stringify({ success: true, message: "password reset successful" });
+  } catch (error) {
+    console.error('Error initiating password reset:', error);
+    return JSON.stringify({ success: false, error: `Failed reset password: ${error}` });
+  }
 }
