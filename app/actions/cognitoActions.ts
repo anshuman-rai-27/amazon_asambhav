@@ -128,11 +128,10 @@ export async function handleSignIn(
       });
       return JSON.stringify({ success: false, error: "User is not verified" });
     }
-
-    return JSON.stringify({ success: true, message: "User logged in successfully" });
+    return JSON.stringify({ success: true, message: "User logged in successfully" })
   } catch (error) {
     console.log(error);
-    return JSON.stringify({ success: false, error: error.name });
+    return JSON.stringify({ success: false, error: getErrorMessage(error) })
   }
 
 }

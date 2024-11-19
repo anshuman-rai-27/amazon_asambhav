@@ -15,7 +15,7 @@ const signUpSchema = z.object({
 })
 
 export default function ConfirmEmail() {
-    const { userSignupEmail, setUserSignupEmail } = GetUserDetails();
+    const { userSignupEmail, setUserSignupEmail } = GetUserDetails() || {};
   const router = useRouter();
 
   const [formData, setFormData] = useState({

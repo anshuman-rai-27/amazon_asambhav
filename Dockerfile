@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --legacy-peer-deps
+RUN npm run build --production
 
 # Copy the rest of the application code
 COPY . .
@@ -17,5 +17,5 @@ COPY . .
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
 

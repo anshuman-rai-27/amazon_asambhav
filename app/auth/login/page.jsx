@@ -38,7 +38,7 @@ export default function Login() {
     e.preventDefault()
     try {
       loginSchema.parse(formData)
-      const response = await handleSignIn(formData)
+      const response = await handleSignIn(formData);
       const responseObj = JSON.parse(response);
 
       if(responseObj.success){

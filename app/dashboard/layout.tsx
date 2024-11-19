@@ -1,0 +1,31 @@
+'use client'
+
+import React from 'react'
+import { handleSignOut } from '../actions/cognitoActions'
+import { useParams, useRouter } from "next/navigation";
+import { Sidebar } from '@/components/sidebar';
+
+function page({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const handleLogout = async() => {
+    await handleSignOut();
+  }
+  const handelShopify = async()=>{
+    router.push('/api/auth/')
+  }
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+    <Sidebar />
+    <main className="flex-1 overflow-y-auto bg-background">
+      {children}
+    </main>
+  </div>
+  )
+}
+
+export default page

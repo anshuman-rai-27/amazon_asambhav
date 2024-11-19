@@ -58,6 +58,7 @@ export default function SignUp() {
         setErrors({})
       }else{
         console.log(responseObj.error)
+        setErrors(responseObj.error)
       }
     } catch (error) {
       if (error instanceof z.ZodError) {

@@ -7,8 +7,7 @@ import { encryptData } from '../utils/kms-encrypter';
 
 const docClient = DynamoDBDocumentClient.from(client);
 
-
-export async function createUser(formData){
+export async function createUser(formData : any){
     console.log("formData: ", formData);
     
     const encryptedEmail = await encryptData(formData.email)
