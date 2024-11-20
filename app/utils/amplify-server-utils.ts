@@ -1,6 +1,21 @@
-import { authConfig } from "@/app/amplify-cognito-config";
 import { NextServer, createServerRunner } from "@aws-amplify/adapter-nextjs";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";
+
+import { Amplify, type ResourcesConfig } from "aws-amplify";
+
+const authConfig: ResourcesConfig["Auth"] = {
+  Cognito: {
+    userPoolId: String(process.env.NEXT_PUBLIC_USER_POOL_ID),
+    userPoolClientId: String(process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID),
+  },
+};
+
+Amplify.configure(
+  {
+    Auth: authConfig,
+  },
+  { ssr: true }
+);
 
 export const { runWithAmplifyServerContext } = createServerRunner({
   config: {
@@ -22,6 +37,8 @@ export async function authenticatedUser(context: NextServer.Context) {
           isAdmin: false,
         };
         const groups = session.tokens.accessToken.payload["cognito:groups"];
+
+        console.log("user: ", user);
         // @ts-ignore
         user.isAdmin = Boolean(groups && groups.includes("Admins"));
 

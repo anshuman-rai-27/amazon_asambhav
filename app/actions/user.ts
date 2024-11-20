@@ -11,8 +11,13 @@ const docClient = DynamoDBDocumentClient.from(client);
 export async function createUser(formData){
     console.log("formData: ", formData);
     
-    const encryptedEmail = await encryptData(formData.email)
-    const encryptedname = await encryptData(formData.name)
+    // Using KMS
+    // const encryptedEmail = await encryptData(formData.email)
+    // const encryptedname = await encryptData(formData.name)
+
+    // Not using KMS
+    const encryptedEmail = formData.email;
+    const encryptedname = formData.name;
 
     try {
         const command = new PutCommand({
