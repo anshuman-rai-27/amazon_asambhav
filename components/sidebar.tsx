@@ -1,5 +1,6 @@
 'use client';
 
+import { handleSignOut } from "@/app/actions/cognitoActions";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -8,6 +9,9 @@ import {
   Settings,
   BarChart3,
   Store,
+  LogOut,
+  LogOutIcon,
+  PackagePlus,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,6 +34,12 @@ const routes = [
     icon: Package,
     href: "/dashboard/inventory",
     color: "text-pink-700",
+  },
+  {
+    label: "Add Product",
+    icon: PackagePlus,
+    href: "/dashboard/add-product",
+    color: "text-gray-500",
   },
   {
     label: "Marketplace",
@@ -78,6 +88,12 @@ export function Sidebar() {
               </div>
             </Link>
           ))}
+          <button className="text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition text-zinc-400">
+              <div className="flex items-center flex-1" onClick={async()=>await handleSignOut()}>
+                <LogOutIcon className="h-5 w-5 mr-3"/>
+                Logout
+              </div>
+          </button>
         </div>
       </div>
     </div>

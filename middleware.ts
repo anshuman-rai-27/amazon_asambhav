@@ -1,10 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { authenticatedUser } from "@/app/utils/amplify-server-utils";
+import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
   console.log(user);
+
+  const userJson = JSON.stringify(user);
+  (await cookies()).set("onestop_vyapar_user", userJson);
 
   const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
   const isOnAdminArea =
@@ -20,11 +24,10 @@ export async function middleware(request: NextRequest) {
       console.log("not admin");
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
     }
-      
-    if (user && !request.nextUrl.pathname.startsWith("/dashboard")) {
-      return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
-    }
-    
+  }
+
+  if (user && !request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
 
   return response;
