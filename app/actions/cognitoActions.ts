@@ -54,9 +54,9 @@ export async function handleSignUp(formData: SignupFormData) {
       },
     });
 
-    console.log("user_id: ", userId);
+    // console.log("user_id: ", userId);
     // Creating user entry into the database
-    await checkTableExists('User');
+    // await checkTableExists('User');
 
     const entryResult = await createUser({
       id: userId,
@@ -149,7 +149,8 @@ export async function handleSignOut() {
 // Function to initiate reset password
 export async function resetPass(formData: ResetPasswordInput) {
   try {
-    await resetPassword(formData);
+    const res = await resetPassword(formData);
+    console.log(res);
     return JSON.stringify({ success: true, message: "OTP sent to email" });
   } catch (error) {
     console.error('Error initiating password reset:', error);

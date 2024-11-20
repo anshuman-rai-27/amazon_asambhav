@@ -40,7 +40,9 @@ export default function ForgotPass() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
+  console.log(initiateResetForm);
   }
+  
 
   const onChangeResetForm = (e) => {
     const { name, value, type, checked } = e.target
@@ -55,7 +57,6 @@ export default function ForgotPass() {
     try {
       const response = await resetPass(initiateResetForm);
       const responseObj = JSON.parse(response);
-
       if(responseObj.success){
         setIsinitiated(true);
         setErrors({});

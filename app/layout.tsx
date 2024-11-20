@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { UserDetailsProvider } from "./context/UserdetailsProvider";
+import ClientLayout from "@/components/ClientLayout";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,9 +33,12 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <ConfigureAmplifyClientSide/>
-          {children}
+          <ConfigureAmplifyClientSide />
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </body>
+
       </UserDetailsProvider>
     </html>
   );

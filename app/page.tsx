@@ -2,6 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { handleSignOut } from './actions/cognitoActions'
+
 
 // export default function Home() {
 //   const router = useRouter();
@@ -115,6 +117,9 @@ const Home: React.FC = () => {
   const handelShopify = async()=>{
     router.push('/api/auth/')
   }
+  const handleLogout = async() => {
+    await handleSignOut();
+  }
   return (
     <>
       <Head>
@@ -141,6 +146,34 @@ const Home: React.FC = () => {
           <p className="max-w-2xl text-lg mb-8">One Stop Vyapaar lets you connect your Shopify store with Amazon's multi-channel fulfillment, simplifying inventory, shipping, and order management.</p>
           <button className="bg-white text-indigo-600 px-6 py-3 rounded-md font-semibold hover:bg-indigo-100">Get Started for Free</button>
         </section>
+        <div className="flex gap-4 items-center flex-col sm:flex-row">
+          <Link
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            href="/auth/signup"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Signup
+          </Link>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
+            href="/auth/login"
+            rel="noopener noreferrer"
+          >
+            Login
+          </a>
+          <button onClick={handleLogout}>
+          Log out
+          </button>
+            
+          
+        </div>
 
         {/* Features Section */}
         <section id="features" className="py-20 px-10 bg-gray-50">

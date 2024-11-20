@@ -4,6 +4,7 @@ import { authenticatedUser } from "@/app/utils/amplify-server-utils";
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
+  console.log(user);
 
   const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
   const isOnAdminArea =
