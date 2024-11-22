@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "@shopify/shopify-api": "^11.0.0",
     "aws-amplify": "^6.8.2",
+    "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

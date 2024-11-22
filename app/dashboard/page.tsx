@@ -9,10 +9,12 @@ import {
 } from "lucide-react";
 import { useOrders } from "@/hooks/use-orders";
 import { useInventory } from "@/hooks/use-inventory";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Home() {
   const { orders } = useOrders();
   const { inventory } = useInventory();
+  const router = useRouter();
 
   const stats = {
     totalOrders: orders?.length || 0,
@@ -20,10 +22,14 @@ export default function Home() {
     pendingOrders: orders?.filter(order => order.status === 'pending').length || 0,
     revenue: orders?.reduce((acc, order) => acc + order.total, 0) || 0,
   };
+  const handelShopify = async()=>{
+    router.push('/dashboard/shopify/')
+  }
 
   return (
     <div className="p-8">
       <h2 className="text-3xl font-bold tracking-tight mb-6">Dashboard</h2>
+      <button className='p-2 rounded-md bg-black text-white' onClick={handelShopify}>Connect Shopify</button>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="p-6">

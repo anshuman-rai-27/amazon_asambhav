@@ -17,6 +17,7 @@ function page({
   const handelShopify = async()=>{
     router.push('/api/auth/')
   }
+  // router.push('/api/sellerId')
 
   return (
     <div className="flex h-screen overflow-hidden">
