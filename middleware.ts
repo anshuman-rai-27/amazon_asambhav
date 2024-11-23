@@ -47,7 +47,7 @@ import { cookies } from "next/headers";
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
-  console.log(user);
+  // console.log(user);
 
   // const userJson = JSON.stringify(user);
   // (await cookies()).set("onestop_vyapar_user", userJson);
@@ -61,6 +61,7 @@ export async function middleware(request: NextRequest) {
       path: "/",
       sameSite: "strict",
     });
+
   }
 
   const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");

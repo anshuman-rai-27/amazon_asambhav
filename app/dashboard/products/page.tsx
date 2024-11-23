@@ -70,10 +70,14 @@ export default function InventoryPage() {
     }, []);
 
     const pushShopify = async (product: Product) => {
+        // console.log(product.options.map((option: any) => ({
+        //     "name": option.name,
+        //     "values": option.values,
+        // })));
         try {
             const response = await axios.get('/api/sellerId');
             const { sellerId }: { sellerId: string } = response.data;
-            const res = await axios.post('/api/shopify/pushProduct', { ...product,sellerId });
+            const res = await axios.post('/api/shopify/pushProduct', { product,sellerId });
             console.log('Product pushed successfully:', res.data);
         } catch (error) {
             console.error('Error pushing product to Shopify:', error);

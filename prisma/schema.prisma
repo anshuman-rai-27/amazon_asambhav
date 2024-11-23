@@ -12,6 +12,7 @@ model Seller {
   id            String          @id @default(uuid())
   name          String
   email         String          @unique
+  phone         String?
   userId        String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -114,7 +115,7 @@ model ProductImage {
 model Order {
   id                  String          @id @default(uuid())
   sellerId            String
-  shopifyId           BigInt?         // Shopify Order ID
+  shopifyId           BigInt?         @unique
   status              String          // Order status (e.g., 'pending', 'completed')
   totalPrice          Float           // Total price of the order
   currency            String          // Order currency (e.g., 'USD')
@@ -125,6 +126,8 @@ model Order {
   shippingAddressId   String?         // Foreign key for shipping address
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
+
+
 
   // Relations
   orderProducts       OrderProduct[]  @relation("OrderToOrderProduct")
