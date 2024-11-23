@@ -140,10 +140,11 @@ export async function handleSignIn(
 export async function handleSignOut() {
   try {
     await signOut();
+    return JSON.stringify({ success: true, message: 'logout successful' })
   } catch (error) {
-    console.log(getErrorMessage(error));
+    console.log(error);
+    return JSON.stringify({ success: false, error: getErrorMessage(error) })
   }
-  redirect("/auth/login");
 }
 
 // Function to initiate reset password

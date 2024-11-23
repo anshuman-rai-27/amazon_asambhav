@@ -7,201 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id        String    @id
-  storeId   String
-  name      String
-  createdAt DateTime  @default(now())
-  upadtedAt DateTime  @updatedAt
-  Store     Store     @relation(fields: [storeId], references: [id])
-  Product   Product[]
-
-  @@index([storeId])
-}
-
-model Color {
-  id        String    @id
-  storeId   String
-  name      String
-  value     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Store     Store     @relation(fields: [storeId], references: [id])
-  Product   Product[] @relation("ColorToProduct")
-
-  @@index([storeId])
-}
-
-model Image {
-  id        String   @id @default(uuid())
-  productId String
-  url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  color     String
-  position  String
-  Manu      Manu[]   @relation("ImageToManu")
-
-  @@index([productId])
-}
-
-model Order {
-  id                   String        @id @default(uuid())
-  SellerProductId      String
-  billingCountry       String
-  billingCountryCode   String
-  billingProvince      String
-  billingProvinceCode  String
-  codAmount            Float?
-  currencyCode         String
-  customerEmail        String
-  customerId           String
-  customerPhone        String
-  sellerId             String
-  shippingCountry      String?
-  shippingCountryCode  String?
-  shippingProvince     String?
-  shippingProvinceCode String?
-  shopifyOrderId       String
-  totalAmount          Float
-  LineItem             LineItem[]
-  SellerProduct        SellerProduct @relation(fields: [SellerProductId], references: [id])
-  Seller               Seller        @relation(fields: [sellerId], references: [id])
-  Payment              Payment?
-}
-
-// Product Schema for Manufacturer
-model Product {
-  id             String   @id @default(uuid())
-  storeId        String
-  categoryId     String
-  ManufacturerId String
-  name           String
-  price          Decimal
-  Quantity       Decimal
-  isFeatured     Boolean  @default(false)
-  isArchived     Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  description    String
-  Image          String[]
-  Manufacturer   Manu     @relation(fields: [ManufacturerId], references: [id])
-  Category       Category @relation(fields: [categoryId], references: [id])
-  Store          Store    @relation(fields: [storeId], references: [id])
-  Color          Color[]  @relation("ColorToProduct")
-  Size           Size[]   @relation("ProductToSize")
-
-  @@index([categoryId])
-  @@index([storeId])
-}
-
-model Size {
-  id        String    @id @default(uuid())
-  storeId   String
-  name      String
-  value     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Store     Store     @relation(fields: [storeId], references: [id])
-  Product   Product[] @relation("ProductToSize")
-
-  @@index([storeId])
-}
-
-model Store {
-  id        String     @id @default(uuid())
-  name      String
-  userId    String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Category  Category[]
-  Color     Color[]
-  Product   Product[]
-  Size      Size[]
-}
-
-// Schema For Seller
 model Seller {
   id            String          @id @default(uuid())
   name          String
-  email         String
+  email         String          @unique
+  phone         String?
   userId        String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  Order         Order[]
-  Payment       Payment[]
-  SellerProduct SellerProduct[]
-  Session       Session[]
-}
-
-// Product Schema for Sellers
-model SellerProduct {
-  id             String       @id @default(uuid())
-  SellerId       String
-  name           String
-  price          Decimal
-  description    String
-  isFeatured     Boolean      @default(true)
-  isArchived     Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  Color          String
-  ManuId         String?      @unique
-  Quantity       Decimal      @default(0)
-  Size           String
-  pricetocompare String
-  Images         String[]
-  Order          Order[]
-  Product_id     Product_id[]
-  Manu           Manu?        @relation(fields: [ManuId], references: [id])
-  Seller         Seller       @relation(fields: [SellerId], references: [id])
-}
-
-model Design {
-  id        String   @id @default(uuid())
-  ManuId    String
-  url       String
-  color     String
-  position  String
-  height    String
-  width     String
-  details   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Manu      Manu     @relation(fields: [ManuId], references: [id], onDelete: Cascade)
-
-  @@index([ManuId])
-}
-
-model Manu {
-  id            String         @id @default(uuid())
-  SellerId      String
-  pricetoseller String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  Color         String
-  productId     String
-  Design        Design[]
-  Product       Product[]
-  Mock          Mock[]
-  SellerProduct SellerProduct?
-  Image         Image[]        @relation("ImageToManu")
-}
-
-model Mock {
-  id        String   @id @default(uuid())
-  ManuId    String
-  color     String
-  position  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  url       String
-  Manu      Manu     @relation(fields: [ManuId], references: [id])
+  session       Session?        // One-to-one relation with Session
+  products      Product[]       // Relation with Products
+  orders        Order[]         // Relation with Orders
 }
 
 model Session {
-  id          String    @id
-  sellerId    String
+  id          String    @id @default(uuid())
+  sellerId    String    @unique
   shop        String
   state       String
   isOnline    Boolean   @default(false)
@@ -211,31 +32,137 @@ model Session {
   Seller      Seller    @relation(fields: [sellerId], references: [id])
 }
 
-model Product_id {
-  id                 String        @id @default(uuid())
-  SellerProductId    String
-  Shopify_Product_id BigInt
-  SellerProduct      SellerProduct @relation(fields: [SellerProductId], references: [id])
+model Product {
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  bodyHtml      String
+  productType   String
+  sellerId      String
+  shopifyId     BigInt?
+  tags          String[]
+  title         String
+  vendor        String
+  orderProducts OrderProduct[]  @relation("ProductToOrderProduct")
+  Seller        Seller          @relation(fields: [sellerId], references: [id])
+  images        ProductImage[]
+  options       ProductOption[]
+  variants      Variant[]
 }
 
-model LineItem {
-  id           String @id
-  orderId      String
-  variantTitle String
+model ProductOption {
+  id        String   @id @default(uuid())
+  productId String
+  name      String
+  values    String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Variant {
+  id           String   @id @default(uuid())
   productId    String
-  name         String
+  title        String
   price        Float
-  quantity     Int
-  totalPrice   Float
-  Order        Order  @relation(fields: [orderId], references: [id])
+  sku          String?
+  inventoryQty Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Product      Product  @relation(fields: [productId], references: [id])
 }
 
-model Payment {
-  id       String  @id
-  sellerId String
-  orderId  String  @unique
-  isCod    Boolean
-  isPaid   Boolean
-  Order    Order   @relation(fields: [orderId], references: [id])
-  Seller   Seller  @relation(fields: [sellerId], references: [id])
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id                  String          @id @default(uuid())
+  sellerId            String
+  shopifyId           BigInt?         @unique
+  status              String          // Order status (e.g., 'pending', 'completed')
+  totalPrice          Float           // Total price of the order
+  currency            String          // Order currency (e.g., 'USD')
+  fulfillmentStatus   String?         // Fulfillment status from Shopify (e.g., 'fulfilled')
+  financialStatus     String?         // Financial status (e.g., 'paid', 'partially_refunded')
+  customerId          String?         // Reference to the Customer model
+  billingAddressId    String?         // Foreign key for billing address
+  shippingAddressId   String?         // Foreign key for shipping address
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+
+
+  // Relations
+  orderProducts       OrderProduct[]  @relation("OrderToOrderProduct")
+  billingAddress      Address?        @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress     Address?        @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  fulfillment         Fulfillment[]   @relation("OrderToFulfillment")
+  Seller              Seller          @relation(fields: [sellerId], references: [id])
+  Customer            Customer?       @relation(fields: [customerId], references: [id])
+}
+
+model OrderProduct {
+  id            String   @id @default(uuid())
+  productId     String
+  orderId       String
+  quantity      Int
+  price         Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tax           Float?
+  totalDiscount Float?
+  Order         Order    @relation("OrderToOrderProduct", fields: [orderId], references: [id])
+  Product       Product  @relation("ProductToOrderProduct", fields: [productId], references: [id])
+}
+
+model Address {
+  id                   String   @id @default(uuid())
+  firstName            String
+  lastName             String
+  address1             String
+  address2             String?
+  city                 String
+  province             String
+  provinceCode         String
+  country              String
+  countryCode          String
+  postalCode           String
+  phone                String?
+  latitude             Float?
+  longitude            Float?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  OrderBillingAddress  Order[]  @relation("OrderBillingAddress")
+  OrderShippingAddress Order[]  @relation("OrderShippingAddress")
+}
+
+model Fulfillment {
+  id              String   @id @default(uuid())
+  orderId         String
+  status          String
+  trackingCompany String?
+  trackingNumber  String?
+  trackingUrl     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Order           Order    @relation("OrderToFulfillment", fields: [orderId], references: [id])
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  shopifyId BigInt?
+  email     String
+  firstName String
+  lastName  String
+  phone     String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
 }

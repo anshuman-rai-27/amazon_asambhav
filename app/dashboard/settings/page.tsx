@@ -1,6 +1,7 @@
 "use client"
 
-import React, { ReactNode, useState } from 'react';
+import axios from 'axios';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 interface FormInputProps {
     label: string;
@@ -44,9 +45,9 @@ function FormInput({ label, type = 'text', placeholder, value, onChange }: FormI
 
 
 function Settings() {
+
   const [personalInfo, setPersonalInfo] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     phone: '',
     street: '',
@@ -63,91 +64,111 @@ function Settings() {
     });
   };
 
+  const handleOnsubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.get('/api/sellerId');
+      const { sellerId }: { sellerId: string } = res.data;
+
+      const response = await axios.put('/api/profile', { ...personalInfo, sellerId });
+      console.log("profile updated successfully: ", response.data);
+    } catch (error) {
+      console.error('Error updating the profile: ', error);
+    }
+
+  }
+
+  const getUserInfo = async() => {
+    try {
+      const response = await axios.get('/api/profile', {
+        withCredentials: true
+      });
+      console.log('Fetched user successfully :', response.data);
+      const user = response.data.seller;
+
+      setPersonalInfo({ ...personalInfo, name: user.name, email: user.email, phone: user.phone });
+    } catch (error) {
+      console.error('Error fetching the user: ', error);
+    }
+  }
+
+  useEffect(()=>{
+    getUserInfo();
+  }, []);
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-          Save Changes
-        </button>
-      </div>
-
-      <SettingsCard title="Personal Information">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormInput
-            label="First Name"
-            name="firstName"
-            placeholder="Enter your first name"
-            value={personalInfo.firstName}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="Last Name"
-            name="lastName"
-            placeholder="Enter your last name"
-            value={personalInfo.lastName}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="Email"
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={personalInfo.email}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="Phone Number"
-            type="tel"
-            name="phone"
-            placeholder="Enter your phone number"
-            value={personalInfo.phone}
-            onChange={handlePersonalInfoChange}
-          />
+      <form onSubmit={handleOnsubmit}>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Settings</h1>
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            Save Changes
+          </button>
         </div>
-      </SettingsCard>
 
-      <SettingsCard title="Address">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
+        <SettingsCard title="Personal Information">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormInput
-              label="Street Address"
-              name="street"
-              placeholder="Enter your street address"
-              value={personalInfo.street}
+              label="Full Name"
+              name="name"
+              placeholder="Enter your first name"
+              value={personalInfo.name}
+              onChange={handlePersonalInfoChange}
+            />
+            <FormInput
+              label="Phone Number"
+              type="tel"
+              name="phone"
+              placeholder="Enter your phone number"
+              value={personalInfo.phone}
               onChange={handlePersonalInfoChange}
             />
           </div>
-          <FormInput
-            label="City"
-            name="city"
-            placeholder="Enter your city"
-            value={personalInfo.city}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="State/Province"
-            name="state"
-            placeholder="Enter your state"
-            value={personalInfo.state}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="ZIP/Postal Code"
-            name="zipCode"
-            placeholder="Enter your ZIP code"
-            value={personalInfo.zipCode}
-            onChange={handlePersonalInfoChange}
-          />
-          <FormInput
-            label="Country"
-            name="country"
-            placeholder="Enter your country"
-            value={personalInfo.country}
-            onChange={handlePersonalInfoChange}
-          />
-        </div>
-      </SettingsCard>
+        </SettingsCard>
+
+        <SettingsCard title="Address">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <FormInput
+                label="Street Address"
+                name="street"
+                placeholder="Enter your street address"
+                value={personalInfo.street}
+                onChange={handlePersonalInfoChange}
+              />
+            </div>
+            <FormInput
+              label="City"
+              name="city"
+              placeholder="Enter your city"
+              value={personalInfo.city}
+              onChange={handlePersonalInfoChange}
+            />
+            <FormInput
+              label="State/Province"
+              name="state"
+              placeholder="Enter your state"
+              value={personalInfo.state}
+              onChange={handlePersonalInfoChange}
+            />
+            <FormInput
+              label="ZIP/Postal Code"
+              name="zipCode"
+              placeholder="Enter your ZIP code"
+              value={personalInfo.zipCode}
+              onChange={handlePersonalInfoChange}
+            />
+            <FormInput
+              label="Country"
+              name="country"
+              placeholder="Enter your country"
+              value={personalInfo.country}
+              onChange={handlePersonalInfoChange}
+            />
+          </div>
+        </SettingsCard>
+      </form>
     </div>
   );
 }

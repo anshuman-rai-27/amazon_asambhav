@@ -9,12 +9,11 @@ import {
   Settings,
   BarChart3,
   Store,
-  LogOut,
   LogOutIcon,
   PackagePlus,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const routes = [
   {
@@ -63,6 +62,18 @@ const routes = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async() => {
+    const logoutRes = await handleSignOut();
+
+    const logoutResObj = JSON.parse(logoutRes);
+    if(logoutResObj.success){
+      router.push('/auth/login');
+    }else{
+      console.log(logoutResObj.error);
+    }
+  }
 
   return (
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
@@ -89,7 +100,7 @@ export function Sidebar() {
             </Link>
           ))}
           <button className="text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition text-zinc-400">
-              <div className="flex items-center flex-1" onClick={async()=>await handleSignOut()}>
+              <div className="flex items-center flex-1" onClick={async()=>await handleLogout()}>
                 <LogOutIcon className="h-5 w-5 mr-3"/>
                 Logout
               </div>

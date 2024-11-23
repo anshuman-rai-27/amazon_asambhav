@@ -5,7 +5,6 @@ import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { UserDetailsProvider } from "./context/UserdetailsProvider";
 import ClientLayout from "@/components/ClientLayout";
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

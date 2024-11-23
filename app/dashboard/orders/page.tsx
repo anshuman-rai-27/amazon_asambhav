@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -19,24 +19,71 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useOrders } from '@/hooks/use-orders';
+import axios from 'axios';
 import { format } from 'date-fns';
+
+type Order = {
+  id: string;
+  customer: {
+    name: string;
+  };
+  createdAt: string;
+  status: string;
+  total: number;
+};
 
 export default function OrdersPage() {
   const [filter, setFilter] = useState('');
   const [status, setStatus] = useState('all');
-  const { orders, isLoading } = useOrders();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch orders once on mount
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get('/api/shopify/orders');
+        const data = response.data;
+
+        const mappedOrders: Order[] = data.orders.orders.map((order: any) => ({
+          id: order.id.toString(),
+          customer: {
+            name: order.customer?.first_name
+              ? `${order.customer.first_name} ${order.customer.last_name}`
+              : 'Unknown',
+          },
+          createdAt: order.created_at,
+          status: order.financial_status || 'pending',
+          total: parseFloat(order.current_total_price || 0),
+        }));
+
+        setOrders(mappedOrders);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  // Filter orders whenever filter or status changes
+  useEffect(() => {
+    const filtered = orders.filter((order) => {
+      const matchesFilter =
+        order.customer.name.toLowerCase().includes(filter.toLowerCase()) ||
+        order.id.includes(filter);
+      const matchesStatus = status === 'all' || order.status === status;
+      return matchesFilter && matchesStatus;
+    });
+    setFilteredOrders(filtered);
+  }, [filter, status, orders]);
 
   if (isLoading) {
     return <div className="p-8">Loading orders...</div>;
   }
-
-  const filteredOrders = orders?.filter((order) => {
-    const matchesFilter = order.customer.name.toLowerCase().includes(filter.toLowerCase()) ||
-      order.id.toLowerCase().includes(filter.toLowerCase());
-    const matchesStatus = status === 'all' || order.status === status;
-    return matchesFilter && matchesStatus;
-  });
 
   return (
     <div className="p-8">
@@ -59,7 +106,7 @@ export default function OrdersPage() {
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="processing">Processing</SelectItem>
+            <SelectItem value="paid">Paid</SelectItem>
             <SelectItem value="fulfilled">Fulfilled</SelectItem>
             <SelectItem value="cancelled">Cancelled</SelectItem>
           </SelectContent>
@@ -79,17 +126,21 @@ export default function OrdersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredOrders?.map((order) => (
+            {filteredOrders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.customer.name}</TableCell>
-                <TableCell>{format(new Date(order.createdAt), 'MMM d, yyyy')}</TableCell>
+                <TableCell>
+                  {format(new Date(order.createdAt), 'MMM d, yyyy')}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={
-                      order.status === 'fulfilled' ? 'success' :
-                      order.status === 'cancelled' ? 'destructive' :
-                      'secondary'
+                      order.status === 'fulfilled'
+                        ? 'outline'
+                        : order.status === 'cancelled'
+                        ? 'destructive'
+                        : 'secondary'
                     }
                   >
                     {order.status}

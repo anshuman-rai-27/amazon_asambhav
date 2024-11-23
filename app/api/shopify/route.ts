@@ -134,45 +134,45 @@
 // }
 
 
-// // export async function GET(
-// //     req: Request,) {
-// //     try {
-// //         console.log('api')
+// export async function GET(
+//     req: Request,) {
+//     try {
+//         console.log('api')
 
-// //         const { userId } = auth();
+//         const { userId } = auth();
 
-// //         const cookies = req.headers.get('cookie');
-// //         if (!cookies) {
-// //             return new NextResponse("Missing cookies", { status: 403 });
-// //         }
+//         const cookies = req.headers.get('cookie');
+//         if (!cookies) {
+//             return new NextResponse("Missing cookies", { status: 403 });
+//         }
 
-// //         const parsedCookies = Object.fromEntries(
-// //             cookies.split('; ').map(c => {
-// //                 const [key, value] = c.split('=');
-// //                 return [key, decodeURIComponent(value)];
-// //             })
-// //         );
+//         const parsedCookies = Object.fromEntries(
+//             cookies.split('; ').map(c => {
+//                 const [key, value] = c.split('=');
+//                 return [key, decodeURIComponent(value)];
+//             })
+//         );
 
-// //         const shopify_token = parsedCookies.shopify_token;
-// //         if (!shopify_token) {
-// //             return NextResponse.redirect(`https://${process.env.HOST}/api/auth/`);
-// //         }
-// //         console.log(shopify_token);
+//         const shopify_token = parsedCookies.shopify_token;
+//         if (!shopify_token) {
+//             return NextResponse.redirect(`https://${process.env.HOST}/api/auth/`);
+//         }
+//         console.log(shopify_token);
 
 
-// //         // const result = await fetch(`https://${process.env.SHOP}/admin/api/2024-04/orders.json?status=any`, {
-// //         //     method: 'GET',
-// //         //     headers: {
-// //         //         'X-Shopify-Access-Token':ac
-// //         //     }
-// //         // })
-// //         // console.log(result.text());
-// //         const response = NextResponse.json(shopify_token);
+//         // const result = await fetch(`https://${process.env.SHOP}/admin/api/2024-04/orders.json?status=any`, {
+//         //     method: 'GET',
+//         //     headers: {
+//         //         'X-Shopify-Access-Token':ac
+//         //     }
+//         // })
+//         // console.log(result.text());
+//         const response = NextResponse.json(shopify_token);
 
-// //         return response;
-// //     }catch (error) {
-// //         console.log('[sellerS_POST', error);
-// //         return new NextResponse("Internal error", { status: 500 });
+//         return response;
+//     }catch (error) {
+//         console.log('[sellerS_POST', error);
+//         return new NextResponse("Internal error", { status: 500 });
 
-// //     }
-// // }
+//     }
+// }

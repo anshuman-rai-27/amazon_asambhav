@@ -104,36 +104,36 @@ function SellerProducts() {
             />
           </div>
 
-            <div className='flex justify-start items-center w-full'>
-                {
-                    productImages.map((image, i)=>{
-                        return <div key={i} className='rounded-lg m-4 flex-col flex justify-center items-center'>
-                                    <Cross fill='black' className='text-gray-700 bg-white rounded-full p-2 size-8 rotate-[45deg] cursor-pointer relative top-4 -right-5' onClick={()=>removeImage(image)}/>
-                                    <Image src={URL.createObjectURL(image)} alt={`product-img-${i}`} width={50} height={50} />
-                                </div>
-                    })
-                }
-            </div>
+          <div className='flex justify-start items-center w-full'>
+              {
+                  productImages.map((image, i)=>{
+                      return <div key={i} className='rounded-lg m-4 flex-col flex justify-center items-center'>
+                                  <Cross fill='black' className='text-gray-700 bg-white rounded-full p-2 size-8 rotate-[45deg] cursor-pointer relative top-4 -right-5' onClick={()=>removeImage(image)}/>
+                                  <Image src={URL.createObjectURL(image)} alt={`product-img-${i}`} width={50} height={50} />
+                              </div>
+                  })
+              }
+          </div>
 
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                id="image-upload"
-                onChange={handleImageChange}
-              />
-              <label
-                htmlFor="image-upload"
-                className="cursor-pointer flex flex-col items-center"
-              >
-                <Upload className="h-12 w-12 text-gray-400" />
-                <span className="mt-2 text-sm text-gray-600">
-                  Drop images here or click to upload
-                </span>
-              </label>
-            </div>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              id="image-upload"
+              onChange={handleImageChange}
+            />
+            <label
+              htmlFor="image-upload"
+              className="cursor-pointer flex flex-col items-center"
+            >
+              <Upload className="h-12 w-12 text-gray-400" />
+              <span className="mt-2 text-sm text-gray-600">
+                Drop images here or click to upload
+              </span>
+            </label>
+          </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div>
