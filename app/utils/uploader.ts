@@ -1,6 +1,6 @@
 "use server"
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -16,8 +16,9 @@ const bucketName = process.env.S3_BUCKET_NAME;
 
 export default async function uploadProductImages(formData: FormData) {
     try {
-      const files = formData.get('files') as File[] | null;
-      if(!files) return JSON.stringify({ success: false, error: 'File not provide' });
+      const files = formData.getAll('files') as File[] | null;
+      console.log("files: ", files);
+      if(!files) return JSON.stringify({ success: false, error: 'File not provided' });
 
       const imageURLs = [];
 
@@ -42,14 +43,16 @@ export default async function uploadProductImages(formData: FormData) {
 
             console.log("Upload successful: ", data);
 
-            const signedUrl = await getSignedUrl(s3Client, new PutObjectCommand({ 
-                Bucket: bucketName, 
-                Key: file.name 
-            }), {
-                expiresIn: 60 * 60 * 24 * 365 * 100
-            });
+            // const signedUrl = await getSignedUrl(s3Client, new PutObjectCommand({ 
+            //     Bucket: bucketName, 
+            //     Key: file.name 
+            // }), {
+            //     expiresIn: 60 * 60 * 24 * 365 * 100
+            // });
 
-            imageURLs.push(signedUrl);            
+            const signedUrl = `https://onestop-vyapar.s3.ap-south-1.amazonaws.com/${file.name}`;
+
+            imageURLs.push(signedUrl);
         }else{
             return JSON.stringify({ success: false, error: "Only .png, .jpg, .jpeg files are allowed"});
         }
