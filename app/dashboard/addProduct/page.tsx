@@ -1,9 +1,12 @@
 'use client';
 import React, { useState } from 'react';
 import axios from 'axios';
+<<<<<<< HEAD
 import { Cross, Upload } from 'lucide-react';
 import Image from 'next/image';
 import uploadProductImages from '@/app/utils/uploader';
+=======
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
 
 type Option = {
   name: string;
@@ -22,6 +25,7 @@ type Image = {
 };
 
 const ProductForm = () => {
+<<<<<<< HEAD
   const [productImages, setProductImages] = useState<File[]>([]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +42,8 @@ const ProductForm = () => {
       setProductImages(newProdImages);
   }
 
+=======
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
   const [product, setProduct] = useState({
     title: '',
     bodyHtml: '',
@@ -85,11 +91,19 @@ const ProductForm = () => {
     setProduct((prevState) => ({ ...prevState, variants: newVariants }));
   };
 
+<<<<<<< HEAD
   // const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
   //   const newImages = [...product.images];
   //   newImages[index].url = e.target.value;
   //   setProduct((prevState) => ({ ...prevState, images: newImages }));
   // };
+=======
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newImages = [...product.images];
+    newImages[index].url = e.target.value;
+    setProduct((prevState) => ({ ...prevState, images: newImages }));
+  };
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
 
   const addOption = () => {
     setProduct((prevState) => ({
@@ -105,6 +119,7 @@ const ProductForm = () => {
     }));
   };
 
+<<<<<<< HEAD
   // const addImage = () => {
   //   setProduct((prevState) => ({
   //     ...prevState,
@@ -137,6 +152,17 @@ const ProductForm = () => {
       return;
     }
 
+=======
+  const addImage = () => {
+    setProduct((prevState) => ({
+      ...prevState,
+      images: [...prevState.images, { url: '' }],
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
     const res = await axios.get('/api/sellerId');
     const { sellerId }: { sellerId: string } = res.data;
     try {
@@ -303,7 +329,11 @@ const ProductForm = () => {
       </div>
 
       {/* Images Section */}
+<<<<<<< HEAD
       {/* <div>
+=======
+      <div>
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
         <label className="block text-gray-600">Images</label>
         {product.images.map((image, index) => (
           <div key={index} className="flex space-x-4 mb-4">
@@ -323,6 +353,7 @@ const ProductForm = () => {
         >
           Add Image
         </button>
+<<<<<<< HEAD
       </div> */}
 
       <div className='flex justify-start items-center w-full'>
@@ -354,6 +385,8 @@ const ProductForm = () => {
             Drop images here or click to upload
           </span>
         </label>
+=======
+>>>>>>> c3d99ad02053f4ff748a38f19e9259ee90b902d3
       </div>
 
       <button

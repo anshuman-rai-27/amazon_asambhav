@@ -8,16 +8,16 @@ datasource db {
 }
 
 model Seller {
-  id            String          @id @default(uuid())
-  name          String
-  email         String          @unique
-  phone         String?
-  userId        String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  session       Session?        // One-to-one relation with Session
-  products      Product[]       // Relation with Products
-  orders        Order[]         // Relation with Orders
+  id        String    @id @default(uuid())
+  name      String
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  email     String    @unique
+  phone     String?
+  orders    Order[]
+  products  Product[]
+  session   Session?
 }
 
 model Session {
@@ -82,29 +82,25 @@ model ProductImage {
 }
 
 model Order {
-  id                  String          @id @default(uuid())
-  sellerId            String
-  shopifyId           BigInt?         @unique
-  status              String          // Order status (e.g., 'pending', 'completed')
-  totalPrice          Float           // Total price of the order
-  currency            String          // Order currency (e.g., 'USD')
-  fulfillmentStatus   String?         // Fulfillment status from Shopify (e.g., 'fulfilled')
-  financialStatus     String?         // Financial status (e.g., 'paid', 'partially_refunded')
-  customerId          String?         // Reference to the Customer model
-  billingAddressId    String?         // Foreign key for billing address
-  shippingAddressId   String?         // Foreign key for shipping address
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
-
-
-
-  // Relations
-  orderProducts       OrderProduct[]  @relation("OrderToOrderProduct")
-  billingAddress      Address?        @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
-  shippingAddress     Address?        @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
-  fulfillment         Fulfillment[]   @relation("OrderToFulfillment")
-  Seller              Seller          @relation(fields: [sellerId], references: [id])
-  Customer            Customer?       @relation(fields: [customerId], references: [id])
+  id                String         @id @default(uuid())
+  sellerId          String
+  createdAt         DateTime       @default(now())
+  shopifyId         BigInt?        @unique
+  status            String
+  totalPrice        Float
+  updatedAt         DateTime       @updatedAt
+  billingAddressId  String?
+  currency          String
+  customerId        String?
+  financialStatus   String?
+  fulfillmentStatus String?
+  shippingAddressId String?
+  fulfillment       Fulfillment[]  @relation("OrderToFulfillment")
+  billingAddress    Address?       @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
+  Customer          Customer?      @relation(fields: [customerId], references: [id])
+  Seller            Seller         @relation(fields: [sellerId], references: [id])
+  shippingAddress   Address?       @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  orderProducts     OrderProduct[] @relation("OrderToOrderProduct")
 }
 
 model OrderProduct {
