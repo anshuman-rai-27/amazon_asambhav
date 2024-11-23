@@ -92,16 +92,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(
-        req: Request, res:Response) {
+export async function PUT(req: Request, res: Response) {
         try {
-            const { name, sellerId, phone } = await req.json();
-            // console.log('ids');
-            // const user = await currentUser();
-            // const { userId } = auth();
-            // console.log('ids');
-            // console.log(userId);
-            // console.log(user);
+            const body = await req.json();
+            const { name, sellerId, phone, address, city, state, country, pincode } = body;
+            console.log("body: ",body)
+
     
             if (!sellerId) {
                 return new NextResponse("Unauthorized", { status: 401 });
@@ -109,11 +105,12 @@ export async function PUT(
     
             const seller = await prisma.seller.findFirst({
                 where: {
-                    userId: sellerId
+                    id: sellerId
                 }
             });
     
             // console.log('sellerid',seller)
+            console.log("seller: ", seller)
     
             if (!seller) {
                 return new NextResponse("Seller not found", { status: 404 });
@@ -121,11 +118,16 @@ export async function PUT(
 
             const updatedSeller = await prisma.seller.update({
                 where: {
-                    userId: sellerId
+                    id: sellerId
                 },
                 data: {
                     name: name,
-                    phone: phone
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    state: state,
+                    country: country,
+                    pincode: pincode
                 }
             });
     
