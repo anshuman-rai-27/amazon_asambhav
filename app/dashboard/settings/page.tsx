@@ -26,7 +26,7 @@ function SettingsCard({ title, children }: SettingsCardProps) {
     );
 }
 
-function FormInput({ label, type = 'text', placeholder, value, onChange }: FormInputProps) {
+function FormInput({ label, type = 'text', placeholder, value, name, onChange }: FormInputProps) {
     return (
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -35,6 +35,7 @@ function FormInput({ label, type = 'text', placeholder, value, onChange }: FormI
         <input
           type={type}
           className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -50,10 +51,10 @@ function Settings() {
     name: '',
     email: '',
     phone: '',
-    street: '',
+    address: '',
     city: '',
     state: '',
-    zipCode: '',
+    pincode: '',
     country: '',
   });
 
@@ -67,6 +68,7 @@ function Settings() {
   const handleOnsubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log("formdata: ", personalInfo)
     try {
       const res = await axios.get('/api/sellerId');
       const { sellerId }: { sellerId: string } = res.data;
@@ -87,7 +89,16 @@ function Settings() {
       console.log('Fetched user successfully :', response.data);
       const user = response.data.seller;
 
-      setPersonalInfo({ ...personalInfo, name: user.name, email: user.email, phone: user.phone });
+      setPersonalInfo({ ...personalInfo, 
+        name: user.name, 
+        email: user.email, 
+        phone: user.phone, 
+        address: user.address,
+        city: user.city,
+        country: user.country,
+        pincode: user.pincode,
+        state: user.state
+      });
     } catch (error) {
       console.error('Error fetching the user: ', error);
     }
@@ -119,7 +130,7 @@ function Settings() {
             <FormInput
               label="Phone Number"
               type="tel"
-              name="phone"
+              name='phone'
               placeholder="Enter your phone number"
               value={personalInfo.phone}
               onChange={handlePersonalInfoChange}
@@ -132,9 +143,9 @@ function Settings() {
             <div className="md:col-span-2">
               <FormInput
                 label="Street Address"
-                name="street"
+                name="address"
                 placeholder="Enter your street address"
-                value={personalInfo.street}
+                value={personalInfo.address}
                 onChange={handlePersonalInfoChange}
               />
             </div>
@@ -154,9 +165,9 @@ function Settings() {
             />
             <FormInput
               label="ZIP/Postal Code"
-              name="zipCode"
+              name="pincode"
               placeholder="Enter your ZIP code"
-              value={personalInfo.zipCode}
+              value={personalInfo.pincode}
               onChange={handlePersonalInfoChange}
             />
             <FormInput
