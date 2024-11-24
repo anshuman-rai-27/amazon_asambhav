@@ -130,3 +130,189 @@ export async function sendLowstockMail(emailTo: string, subject: string, seller_
     console.error("Error sending email:", error);
   }
 }
+
+// Define the OrderDetails interface
+interface OrderDetails {
+  topic: string;
+  shop: string;
+  orderId: number;
+  orderName: string;
+  totalPrice: string;
+  currency: string;
+  customerEmail: string;
+  customerName: string;
+  customerAddress: string;
+  lineItems: Array<{
+    name: string;
+    quantity: number;
+    price: string;
+  }>;
+}
+
+// Function to extract order details from rawData
+export async function extractOrderDetails(rawData: any): Promise<OrderDetails> {
+  // Parse the `body` field
+  const body = JSON.parse(rawData.body);
+
+  // Extract customer details
+  const customer = body.customer || {};
+  const customerName = `${customer.first_name || ""} ${customer.last_name || ""}`.trim();
+  const defaultAddress = customer.default_address || {};
+  const customerAddress = `${defaultAddress.address1 || ""}, ${defaultAddress.city || ""}, ${defaultAddress.province || ""}, ${defaultAddress.country || ""}`.trim();
+
+  // Extract line items
+  const lineItems = body.line_items.map((item: any) => ({
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+  }));
+
+  // Send an email notification
+  const emailSubject = `Order Confirmation - ${body.name}`;
+  const firstLineItem = lineItems[0]; // Assume email is about the first product in the order
+  await sendCustomerEmail(
+    body.email,
+    emailSubject,
+    customerName,
+    firstLineItem.name,
+    firstLineItem.quantity
+  );
+
+  // Return the extracted details
+  return {
+    topic: rawData.topic,
+    shop: rawData.shop,
+    orderId: body.id,
+    orderName: body.name,
+    totalPrice: body.total_price,
+    currency: body.currency,
+    customerEmail: body.email || "",
+    customerName,
+    customerAddress,
+    lineItems,
+  };
+}
+
+// Function to send customer email notifications
+export async function sendCustomerEmail(
+  emailTo: string,
+  subject: string,
+  sellerName: string,
+  productName: string,
+  productQuantity: number
+) {
+  const applicationId = process.env.PINPOINT_PROJECT_ID;
+
+  const params = {
+    ApplicationId: applicationId,
+    MessageRequest: {
+      Addresses: {
+        [emailTo]: {
+          ChannelType: "EMAIL",
+        },
+      },
+      MessageConfiguration: {
+        EmailMessage: {
+          FromAddress: "thetechnova023@gmail.com",
+          SimpleEmail: {
+            Subject: { Data: subject },
+            HtmlPart: {
+              Data: `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <style>
+                    body {
+                      font-family: Arial, sans-serif;
+                      background-color: #f9f9f9;
+                      margin: 0;
+                      padding: 0;
+                    }
+                    .email-container {
+                      max-width: 600px;
+                      margin: 20px auto;
+                      background-color: #ffffff;
+                      border-radius: 8px;
+                      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                      overflow: hidden;
+                    }
+                    .header {
+                      background-color: #0077cc;
+                      color: #ffffff;
+                      padding: 20px;
+                      text-align: center;
+                    }
+                    .header h1 {
+                      margin: 0;
+                      font-size: 24px;
+                    }
+                    .content {
+                      padding: 20px;
+                      color: #333333;
+                      line-height: 1.6;
+                    }
+                    .content h2 {
+                      margin-top: 0;
+                      color: #0077cc;
+                    }
+                    .footer {
+                      background-color: #f1f1f1;
+                      color: #666666;
+                      text-align: center;
+                      padding: 10px;
+                      font-size: 12px;
+                    }
+                  </style>
+                </head>
+                <body>
+                  <div class="email-container">
+                    <!-- Header -->
+                    <div class="header">
+                      <h1>Order Confirmation</h1>
+                    </div>
+                    <!-- Content -->
+                    <div class="content">
+                      <h2>Hello ${sellerName},</h2>
+                      <p>Thank you for your order! Here are your order details:</p>
+                      <p><strong>Product:</strong> ${productName}</p>
+                      <p><strong>Quantity:</strong> ${productQuantity}</p>
+                      <p>We will notify you once your order is shipped.</p>
+                    </div>
+                    <!-- Footer -->
+                    <div class="footer">
+                      <p>You are receiving this email as part of your order confirmation.</p>
+                      <p>If you have any questions, please contact our support team.</p>
+                    </div>
+                  </div>
+                </body>
+                </html>
+              `,
+            },
+            TextPart: { Data: `Hello ${sellerName},\n\nThank you for your order. Your product "${productName}" (Quantity: ${productQuantity}) will be processed shortly.\n\nRegards,\nOnestop Vyapaar` },
+          },
+        },
+      },
+    },
+  };
+
+  try {
+    const command = new SendMessagesCommand(params);
+    const response = await client.send(command);
+    console.log("Email sent successfully:", response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+}
+
+// Example usage
+const rawData = {
+  topic: "ORDERS_CREATE",
+  shop: "quickstart-64fd9d6b.myshopify.com",
+  body: '{"id":5762269610149,"name":"#1012","total_price":"238.47","currency":"EUR","email":"anshumanrishi27@gmail.com","customer":{"first_name":"test","last_name":"test","default_address":{"address1":"vara","city":"Varanasi","province":"Uttar Pradesh","country":"India"}},"line_items":[{"name":"Bramhand","quantity":3,"price":"74.99"}]}',
+};
+
+extractOrderDetails(rawData).then((orderDetails) => {
+  console.log(orderDetails);
+});

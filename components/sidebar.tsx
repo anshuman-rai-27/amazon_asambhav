@@ -231,7 +231,7 @@ const routes = [
   {
     label: "Add Product",
     icon: PackagePlus,
-    href: "/dashboard/add-product",
+    href: "/dashboard/addProduct",
     color: "text-gray-500",
   },
   {

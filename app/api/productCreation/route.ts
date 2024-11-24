@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { NextResponse , NextRequest } from 'next/server';
+
 
 const prisma = new PrismaClient();
 
@@ -119,19 +120,118 @@ export async function POST(req: Request) {
     }
 };
 
-export async function GET() {
-    try {
-      const products = await prisma.product.findMany({
-        include: {
-          options: true,
-          variants: true,
-          images: true,
-        },
-      });
-  
-      return NextResponse.json(products, { status: 200 });
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+export async function GET(request: NextRequest) {
+  const response = NextResponse.next();
+  try {
+    const userCookie = request.cookies.get("onestop_vyapar_user");
+    if (!userCookie) {
+      return NextResponse.json(
+        { success: false, error: "User not authenticated" },
+        { status: 401 }
+      );
     }
+
+    // Parse the user JSON from the cookie
+    const user = JSON.parse(userCookie.value);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+    const email = String(user?.signInDetails?.loginId);
+
+    const seller = await prisma.seller.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!seller) {
+      return NextResponse.json(
+        { success: false, error: "Seller not found" },
+        { status: 404 }
+      );
+    }
+
+    const sellerId = seller.id;
+    const products = await prisma.product.findMany({
+      where: {
+        sellerId
+      },
+      include: {
+        options: true,
+        variants: true,
+        images: true,
+      },
+    });
+
+    // Convert BigInt to string for JSON serialization
+    const productsWithStringBigInt = products.map(product => {
+      return JSON.parse(JSON.stringify(product, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      ));
+    });
+
+    console.log(productsWithStringBigInt);
+
+    return NextResponse.json(productsWithStringBigInt, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+}
+
+// export async function GET(request: NextRequest) {
+//   const response = NextResponse.next();
+//     try {
+//       const userCookie = request.cookies.get("onestop_vyapar_user");
+//     if (!userCookie) {
+//       return NextResponse.json(
+//         { success: false, error: "User not authenticated" },
+//         { status: 401 }
+//       );
+//     }
+
+//     // Parse the user JSON from the cookie
+//     const user = JSON.parse(userCookie.value);
+//     if (!user) {
+//       return NextResponse.json(
+//         { success: false, error: "User not authenticated" },
+//         { status: 401 }
+//       );
+//     }
+//     const email = String(user?.signInDetails?.loginId);
+
+//     const seller = await prisma.seller.findUnique({
+//       where: {
+//         email: email,
+//       },
+//     });
+
+//     if (!seller) {
+//       return NextResponse.json(
+//         { success: false, error: "Seller not found" },
+//         { status: 404 }
+//       );
+//     }
+
+//     const sellerId = seller.id;
+//       const products = await prisma.product.findMany({
+//         where:{
+//           sellerId
+//         },
+//         include: {
+//           options: true,
+//           variants: true,
+//           images: true,
+//         },
+//       });
+//       console.log(products)
+  
+//       return NextResponse.json(products, { status: 200 });
+//     } catch (error) {
+//       console.error('Error fetching products:', error);
+//       return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+//     }
+//   }

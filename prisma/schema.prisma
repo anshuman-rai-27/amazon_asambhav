@@ -17,9 +17,9 @@ model Seller {
   phone     String?
   address   String?
   city      String?
-  state     String?
-  pincode   String?
   country   String?
+  pincode   String?
+  state     String?
   orders    Order[]
   products  Product[]
   session   Session?
@@ -28,8 +28,8 @@ model Seller {
 model Session {
   id          String    @id @default(uuid())
   sellerId    String    @unique
-  shop        String
-  state       String
+  shop        String?
+  state       String?
   isOnline    Boolean   @default(false)
   scope       String?
   expires     DateTime?
