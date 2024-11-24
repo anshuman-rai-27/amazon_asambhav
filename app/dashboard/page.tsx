@@ -125,9 +125,25 @@ import {
   Package,
   AlertCircle,
   TrendingUp,
+  NotepadText,
+  Sparkle,
+  CircleX,
+  Truck,
+  
 } from "lucide-react";
+import {
+  
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { RecentSales } from "@/components/recent-sales";
+import { Overview } from "@/components/overview-chart";
+
 import { useOrders } from "@/hooks/use-orders";
 import { useRouter } from "next/navigation";
+
 
 export default function Home() {
   const { orders } = useOrders();
@@ -158,7 +174,7 @@ export default function Home() {
 
          
         <button
-          className="p-2 rounded-md bg-slate-700 text-white font-semibold mb-4 flex items-center gap-2 transition duration-200 hover:bg-slate-600 hover:scale-105"
+          className="p-2 rounded-md bg-slate-700 text-white font-semibold mb-8 flex items-center gap-2 transition duration-200 hover:bg-slate-600 hover:scale-105"
           onClick={handelShopify}
         >
           <img
@@ -212,7 +228,79 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-8">
+      {/* ------------------------------------------------------------------------------------------------ */}
+      
+      <div>
+      <div className="flex flex-wrap lg:flex-nowrap justify-between mt-10 my-6 mb-10 w-full h-auto">
+  {/* Left half with 4 cards */}
+  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 w-full lg:w-1/2 ml-4">
+    <Card className="p-6 sm:p-8 md:p-10 w-full bg-black">
+      <div className="flex items-center gap-4">
+        <NotepadText className="h-8 w-8 text-white" />
+        <div>
+          <p className="text-sm text-muted-foreground text-white">Invoiced</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white">10</h3>
+        </div>
+      </div>
+    </Card>
+
+    <Card className="p-6 sm:p-8 md:p-10 w-full">
+      <div className="flex items-center gap-4">
+        <Truck className="h-8 w-8" />
+        <div>
+          <p className="text-sm text-muted-foreground">Out for delivery</p>
+          <h3 className="text-xl sm:text-2xl font-bold">{stats.fulfilledOrders}</h3>
+        </div>
+      </div>
+    </Card>
+
+    <Card className="p-6 sm:p-8 md:p-10 w-full">
+      <div className="flex items-center gap-4">
+        <CircleX className="h-8 w-8" />
+        <div>
+          <p className="text-sm text-muted-foreground">Cancelled</p>
+          <h3 className="text-xl sm:text-2xl font-bold">2</h3>
+        </div>
+      </div>
+    </Card>
+
+    <Card className="p-6 sm:p-8 md:p-10 w-full bg-purple-200">
+      <div className="flex items-center gap-4">
+        <Sparkle className="h-8 w-8" />
+        <div>
+          <p className="text-sm text-muted-foreground align-middle mt-4 font-semibold text-black">AI Suggestions</p>
+        </div>
+      </div>
+    </Card>
+  </div>
+
+  {/* Right side with a single box */}
+  <div className="w-full lg:w-1/2 mt-6 lg:mt-0 ml-2">
+    <div className="grid gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="pl-2">
+          <Overview />
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</div>
+
+        
+        </div>
+
+
+
+
+
+
+
+
+
+      <div className="mt-[3vh]">
        <h3 className="text-lg sm:text-xl font-semibold mb-4 px-5">Recent Orders</h3>
          <Card className="p-6">
            {orders ? (
