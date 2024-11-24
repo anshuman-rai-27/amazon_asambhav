@@ -30,7 +30,7 @@ export async function createUser(formData: { id?: string; email: string; name: s
       },
     });
 
-    await axios.get('/api/sellerId');
+    // await axios.get('/api/sellerId');
     const cookieOptions:any = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

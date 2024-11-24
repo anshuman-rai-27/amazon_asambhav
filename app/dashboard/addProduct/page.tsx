@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Cross, Upload } from 'lucide-react';
 import Image from 'next/image';
 import uploadProductImages from '@/app/utils/uploader';
+import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
+import ReactMarkdown from 'react-markdown';
 
 type Option = {
   name: string;
@@ -23,6 +25,51 @@ type Image = {
 
 const ProductForm = () => {
   const [productImages, setProductImages] = useState<File[]>([]);
+
+  const [recipe, setRecipe] = useState<string>('');
+    const [suggestions, setSuggestions] = useState<string>('');
+
+    useCopilotReadable({ description: "Current recipe", value: recipe });
+
+    const handleRecipeModifier = async () => {
+        const response = await fetch("/api/getSuggestions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ recipe}),
+        });
+        const data = await response.json();
+        setSuggestions(data.outputText);
+        setProduct((prevProduct) => ({
+          ...prevProduct,
+          bodyHtml: data.outputText, // Update the title
+        }));
+    };
+    // Define the action to get suggestions dynamically
+    useCopilotAction({
+        name: "Product description Suggestions",
+        description: "Fetch suggestions for product description",
+        parameters: [
+            { name: "recipe", description: "The input description text", type: "string" },
+        ],
+        handler: async ({ recipe }) => {
+            // Simulate fetching suggestions from an API or AI model
+            const response = await fetch("/api/getSuggestions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ recipe }),
+            });
+            const data = await response.json();
+            setSuggestions(data.outputText);
+            setProduct((prevProduct) => ({
+              ...prevProduct,
+              bodyHtml: data.outputText, // Update the title
+            }));
+        },
+    });
+
+    const handleRecipeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setRecipe(e.target.value);
+    };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -55,7 +102,9 @@ const ProductForm = () => {
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>, field: keyof typeof product) => {
+    setRecipe(e.target.value);
     const { value } = e.target;
+    
     setProduct((prevState) => ({ ...prevState, [field]: value }));
   };
 
@@ -167,6 +216,14 @@ const ProductForm = () => {
           className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
+        {/* <button onClick={handleRecipeModifier} className=''>Ai suggestions</button> */}
+        <button
+          type="button"
+          onClick={handleRecipeModifier}
+          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+        >
+          Ai suggestions
+        </button>
       </div>
 
       <div>
