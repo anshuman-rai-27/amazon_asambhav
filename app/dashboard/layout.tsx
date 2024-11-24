@@ -86,13 +86,13 @@ function Page({ children }: { children: React.ReactNode }) {
         {children}
       </main>
     </div>
-    {/* <CopilotPopup
-        instructions="As a recipe modifier, your role is to assist users in adjusting and customizing their recipes."
+    <CopilotPopup
+        instructions="As a description writer, your role is to assist users in adjusting and customizing their descriptions."
         labels={{
-          title: "Recipe Modifier",
-          initial: "Hello! I'm here to assist you. I can help you modify recipes and suggest substitutions or alterations.",
+          title: "Description writer",
+          initial: "Hello! I'm here to assist you. I can help you modify dscriptions and suggest substitutions or alterations.",
         }}
-      /> */}
+      />
     </CopilotKit>
   );
 }

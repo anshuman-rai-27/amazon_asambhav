@@ -206,6 +206,7 @@ import {
   LogOutIcon,
   PackagePlus,
   Gem,
+  Code,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -255,6 +256,12 @@ const routes = [
     icon: Gem,
     href: "/dashboard/manufacturers",
     color: "text-pink-500",
+  },
+  {
+    label: "Developer",
+    icon: Code,
+    href: "/dashboard/developer",
+    color: "text-black-500",
   },
   {
     label: "Settings",
