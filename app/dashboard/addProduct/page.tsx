@@ -85,11 +85,6 @@ const ProductForm = () => {
     setProduct((prevState) => ({ ...prevState, variants: newVariants }));
   };
 
-  // const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-  //   const newImages = [...product.images];
-  //   newImages[index].url = e.target.value;
-  //   setProduct((prevState) => ({ ...prevState, images: newImages }));
-  // };
 
   const addOption = () => {
     setProduct((prevState) => ({
@@ -105,12 +100,6 @@ const ProductForm = () => {
     }));
   };
 
-  // const addImage = () => {
-  //   setProduct((prevState) => ({
-  //     ...prevState,
-  //     images: [...prevState.images, { url: '' }],
-  //   }));
-  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,12 +116,16 @@ const ProductForm = () => {
 
     const uploadRes = JSON.parse(uploadResult);
 
+    console.log("uploadres: ", uploadRes.imageURLs);
+
     if(uploadRes.success){
       const images: {url: string}[] = [];
 
       for(const imageURL of uploadRes.imageURLs){
         images.push({ url: imageURL });
       }
+
+      console.log("imageUrls: ", images);
 
       setProduct({ ...product, images: images });
     }else {
@@ -142,6 +135,7 @@ const ProductForm = () => {
 
     const res = await axios.get('/api/sellerId');
     const { sellerId }: { sellerId: string } = res.data;
+    console.log("product data: ", product);
     try {
       const response = await axios.post('/api/productCreation', { ...product, sellerId });
       console.log('Product created successfully:', response.data);

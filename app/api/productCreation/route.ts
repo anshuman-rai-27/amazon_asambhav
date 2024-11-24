@@ -21,6 +21,8 @@ export async function POST(req: Request) {
             sellerId,
         } = await req.json();
 
+        console.log("images server: ", images);
+
         // Validate required fields
         if (!title || !sellerId) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -58,9 +60,9 @@ export async function POST(req: Request) {
                     ),
                 },
                 images: {
-                    create: images.map((image: { url: string }) => ({
-                        url: image.url,
-                    })),
+                  create: images.map((image: { url: string }) => ({
+                      url: image.url,
+                  })),
                 },
             },
         });
