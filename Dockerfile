@@ -1,27 +1,23 @@
 # Use the official Node.js image as a base
-FROM node:18
+FROM node:18-alpine AS base
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json files to the container
+# Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
 
-
-# npm install ke saath error a raha hain since some dependencies error to legacy pair use kiya hun
-# Install dependencies
+# Install dependencies with caching
 RUN npm ci --legacy-peer-deps
 
-# Copy the rest of the application code
+# Copy application code after dependencies are installed
 COPY . .
 
-# Build the Next.js app
-# Buid main issue a raha hain so dev use kar raha hain
-# RUN npm run build  
+# Generate Prisma Client
+RUN npx prisma generate
 
-# Expose the port that Next.js runs on
+# Expose the port that Next.js uses
 EXPOSE 3000
 
-# Start the Next.js application
+# Default command to run Next.js in development mode
 CMD ["npm", "run", "dev"]
-

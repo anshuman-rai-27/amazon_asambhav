@@ -4,6 +4,7 @@ import React from 'react'
 import { handleSignOut } from '../actions/cognitoActions'
 import { useParams, useRouter } from "next/navigation";
 import { Sidebar } from '@/components/sidebar';
+import axios from 'axios';
 
 function page({
   children,
@@ -17,6 +18,7 @@ function page({
   const handelShopify = async()=>{
     router.push('/api/auth/')
   }
+  axios.get('/api/sellerId');
   // router.push('/api/sellerId')
 
   return (

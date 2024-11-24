@@ -165,16 +165,16 @@ export async function POST(req: Request) {
         }
 
         // Parse cookies from the incoming request
-        const cookies = parse(req.headers.get('cookie') || '');
+        // const cookies = parse(req.headers.get('cookie') || '');
 
-        const userCookie = cookies['accessToken'];
+        // const userCookie = cookies['accessToken'];
 
-        if (!userCookie) {
-            return new Response(
-                JSON.stringify({ error: 'Missing access token in cookies' }),
-                { status: 401 }
-            );
-        }
+        // if (!userCookie) {
+        //     return new Response(
+        //         JSON.stringify({ error: 'Missing access token in cookies' }),
+        //         { status: 401 }
+        //     );
+        // }
 
         // Shopify request body
         const shopifyBody = {
@@ -211,7 +211,7 @@ export async function POST(req: Request) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Shopify-Access-Token': String(userCookie),
+                    'X-Shopify-Access-Token': String(session.accessToken),
                 },
                 body: JSON.stringify(shopifyBody),
             }
@@ -229,7 +229,54 @@ export async function POST(req: Request) {
                 { status: shopifyResponse.status }
             );
         }
-
+        const productres = await prisma.product.upsert({
+            where: {
+              id: product.id, // Use the unique identifier for the product
+            },
+            update: {
+              shopifyId:responseData.product.id, // Update only the shopifyId field
+            },
+            create: {
+              title:product.title,
+              bodyHtml:product.bodyHtml,
+              vendor:product.vendor,
+              productType:product.productType,
+              tags: Array.isArray(product.tags)
+                ? product.tags
+                : product.tags.split(",").map((tag: string) => tag.trim()),
+              sellerId:product.sellerId,
+              shopifyId:213, // Include shopifyId in the create data as well
+            //   options: {
+            //     create: product.Options.map((option: any) => ({
+            //       name: option.name,
+            //       values: option.values, // Assuming you are storing this as a JSON array in the database
+            //     })),
+            //   },
+              variants: {
+                create: product.variants.map(
+                  (variant: {
+                    title: string;
+                    price: number;
+                    sku?: string;
+                    inventoryQty: number;
+                  }) => ({
+                    title: variant.title,
+                    price: variant.price,
+                    sku: variant.sku,
+                    inventoryQty: variant.inventoryQty,
+                  })
+                ),
+              },
+              images: {
+                create: product.images.map((image: { url: string }) => ({
+                  url: image.url,
+                })),
+              },
+            },
+          });
+          
+        //   console.log("Product:", productres);
+          
         // Success response
         return new Response(
             JSON.stringify({
