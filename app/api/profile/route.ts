@@ -58,10 +58,10 @@ export async function GET(request: NextRequest) {
 
         // If no authenticated user is found, return an error
         if (!user) {
-        return NextResponse.json(
-            { success: false, error: "User not authenticated" },
-            { status: 401 }
-        );
+            return NextResponse.json(
+                { success: false, error: "User not authenticated" },
+                { status: 401 }
+            );
         }
 
         const email = String(user?.signInDetails?.loginId);
