@@ -8,21 +8,22 @@ datasource db {
 }
 
 model Seller {
-  id        String    @id @default(uuid())
-  name      String
-  userId    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  email     String    @unique
-  phone     String?
-  address   String?
-  city      String?
-  state     String?
-  pincode   String?
-  country   String?
-  orders    Order[]
-  products  Product[]
-  session   Session?
+  id           String        @id @default(uuid())
+  name         String
+  userId       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  email        String        @unique
+  phone        String?
+  address      String?
+  city         String?
+  country      String?
+  pincode      String?
+  state        String?
+  orders       Order[]
+  products     Product[]
+  session      Session?
+  mcfShipments MCFShipment[]
 }
 
 model Session {
@@ -53,6 +54,7 @@ model Product {
   images        ProductImage[]
   options       ProductOption[]
   variants      Variant[]
+  mcfShipments  MCFShipment[]   @relation("MCFShipmentToProduct")
 }
 
 model ProductOption {
@@ -106,6 +108,7 @@ model Order {
   Seller            Seller         @relation(fields: [sellerId], references: [id])
   shippingAddress   Address?       @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
   orderProducts     OrderProduct[] @relation("OrderToOrderProduct")
+  mcfShipments      MCFShipment[]  @relation("OrderToMCFShipment")
 }
 
 model OrderProduct {
@@ -166,4 +169,20 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orders    Order[]
+}
+
+model MCFShipment {
+  id             String    @id @default(uuid())
+  sellerId       String
+  orderId        String
+  status         String    @default("in_progress")
+  shippingMethod String // e.g., 'Standard', 'Express'
+  address        String
+  deliveryDate   DateTime
+  trackingUrl    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  Seller         Seller    @relation(fields: [sellerId], references: [id])
+  items          Product[] @relation("MCFShipmentToProduct")
+  Order          Order     @relation("OrderToMCFShipment", fields: [orderId], references: [id])
 }

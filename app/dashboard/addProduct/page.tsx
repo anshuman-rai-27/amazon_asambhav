@@ -46,7 +46,7 @@ const ProductForm = () => {
     tags: '',
     options: [{ name: '', values: '' }] as Option[],
     variants: [{ title: '', price: 0, sku: '', inventoryQty: 0 }] as Variant[],
-    images: [{ url: '' }] as Image[],
+    // images: [{ url: '' }] as Image[],
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof typeof product) => {
@@ -118,16 +118,16 @@ const ProductForm = () => {
 
     console.log("uploadres: ", uploadRes.imageURLs);
 
-    if(uploadRes.success){
-      const images: {url: string}[] = [];
+    const images: {url: string}[] = [];
 
+    if(uploadRes.success){
       for(const imageURL of uploadRes.imageURLs){
         images.push({ url: imageURL });
       }
 
       console.log("imageUrls: ", images);
 
-      setProduct({ ...product, images: images });
+      // setProduct({ ...product, images: images });
     }else {
       console.log("can not upload image: ", uploadRes.error);
       return;
@@ -137,7 +137,7 @@ const ProductForm = () => {
     const { sellerId }: { sellerId: string } = res.data;
     console.log("product data: ", product);
     try {
-      const response = await axios.post('/api/productCreation', { ...product, sellerId });
+      const response = await axios.post('/api/productCreation', { ...product, images, sellerId });
       console.log('Product created successfully:', response.data);
     } catch (error) {
       console.error('Error creating product:', error);
