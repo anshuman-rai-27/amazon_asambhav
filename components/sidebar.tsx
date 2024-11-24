@@ -205,6 +205,7 @@ import {
   Store,
   LogOutIcon,
   PackagePlus,
+  Gem,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -213,7 +214,7 @@ const routes = [
   {
     label: "Dashboard",
     icon: LayoutDashboard,
-    href: "/",
+    href: "/dashboard",
     color: "text-sky-500",
   },
   {
@@ -228,6 +229,7 @@ const routes = [
     href: "/dashboard/inventory",
     color: "text-pink-700",
   },
+
   {
     label: "Add Product",
     icon: PackagePlus,
@@ -235,16 +237,24 @@ const routes = [
     color: "text-gray-500",
   },
   {
+    label: "Analytics",
+    icon: BarChart3,
+    href: "/dashboard/analytics",
+    color: "text-orange-700",
+  },
+  {
     label: "Marketplace",
     icon: Store,
     href: "/dashboard/marketplace",
     color: "text-green-500",
   },
+
+
   {
-    label: "Analytics",
-    icon: BarChart3,
-    href: "/dashboard/analytics",
-    color: "text-orange-700",
+    label: "Marcketplace Seller",
+    icon: Gem,
+    href: "/dashboard/manufacturers",
+    color: "text-pink-500",
   },
   {
     label: "Settings",

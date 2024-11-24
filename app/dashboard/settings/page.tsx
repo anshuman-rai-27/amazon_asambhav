@@ -180,6 +180,14 @@ function Settings() {
           </div>
         </SettingsCard>
       </form>
+      <SettingsCard title="Vyapaar Plugins">
+        <p className='pb-5 text-gray-400'>Connect One Stop Vyapaar to any e-commerce store</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p>Url-1</p>
+          <p>Url-2</p>
+          
+          </div>
+        </SettingsCard>
     </div>
   );
 }
