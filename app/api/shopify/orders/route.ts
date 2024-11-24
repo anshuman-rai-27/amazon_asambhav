@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -18,24 +17,16 @@ export async function GET(req: Request) {
             })
         );
 
-        const shopifyToken = parsedCookies.accessToken;
-        const rawData = parsedCookies.onestop_vyapar_user; // Raw string value
-        let data;
+        const sellerId = parsedCookies.SellerId;
 
-        try {
-            data = JSON.parse(rawData); // Parse JSON string into an object
-        } catch (err) {
-            return new Response(
-                JSON.stringify({ error: "Invalid or corrupted onestop_vyapar_user data" }),
-                { status: 400 }
-            );
-        }
-        const email = String(data?.signInDetails?.loginId);
-        const seller = await prisma.seller.findUnique({
-            where: { email },
+        
+        const session = await prisma.session.findUnique({
+            where: { sellerId },
         });
+        // console.log(seller);
+        const shopifyToken = session?.accessToken;
 
-        if (!seller) {
+        if (!session) {
             return new Response(
                 JSON.stringify({ error: 'No Shopify seller found for the seller' }),
                 { status: 400 }
@@ -120,7 +111,7 @@ export async function GET(req: Request) {
                 },
                 create: {
                     shopifyId: BigInt(order.id),
-                    Seller: { connect: { id: seller.id } },
+                    Seller: { connect: { id: sellerId } },
                     status: order.financial_status,
                     totalPrice: parseFloat(order.total_price),
                     currency: order.currency,

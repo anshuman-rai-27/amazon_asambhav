@@ -29,8 +29,8 @@ model Seller {
 model Session {
   id          String    @id @default(uuid())
   sellerId    String    @unique
-  shop        String
-  state       String
+  shop        String?
+  state       String?
   isOnline    Boolean   @default(false)
   scope       String?
   expires     DateTime?
