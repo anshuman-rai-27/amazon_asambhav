@@ -1,4 +1,5 @@
 import { PinpointClient, SendMessagesCommand } from "@aws-sdk/client-pinpoint";
+import axios from "axios";
 
 // Initialize the Pinpoint client
 const client = new PinpointClient({
@@ -16,7 +17,7 @@ export async function sendLowstockMail(emailTo: string, subject: string, seller_
     MessageRequest: {
       Addresses: {
         [emailTo]: {
-            ChannelType: "EMAIL",
+          ChannelType: "EMAIL",
         },
       },
       MessageConfiguration: {
@@ -150,9 +151,12 @@ interface OrderDetails {
 }
 
 // Function to extract order details from rawData
-export async function extractOrderDetails(rawData: any): Promise<OrderDetails> {
+export async function extractOrderDetails(rawData: any,baseUrl:any): Promise<OrderDetails> {
   // Parse the `body` field
-  const body = JSON.parse(rawData.body);
+  // console.log('enter');
+  // console.log(baseUrl,rawData);
+  const body = rawData;
+  // console.log('Baseextract',baseUrl);
 
   // Extract customer details
   const customer = body.customer || {};
@@ -165,7 +169,9 @@ export async function extractOrderDetails(rawData: any): Promise<OrderDetails> {
     name: item.name,
     quantity: item.quantity,
     price: item.price,
+    productId: item.variant_id || null,
   }));
+  // console.log(lineItems,'lineitems');
 
   // Send an email notification
   const emailSubject = `Order Confirmation - ${body.name}`;
@@ -177,6 +183,47 @@ export async function extractOrderDetails(rawData: any): Promise<OrderDetails> {
     firstLineItem.name,
     firstLineItem.quantity
   );
+  async function fetchSellerDetails(productId: string,baseUrl:any) {
+    // console.log(baseUrl,"fetchseller");
+    console.log(productId,'productid');
+    const response = await fetch(`${baseUrl}/api/sellermail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch seller details: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+
+  try {
+    const seller = await fetchSellerDetails(firstLineItem.productId,baseUrl);
+
+    if (!seller || !seller.email) {
+      throw new Error('Seller email not found');
+    }
+
+
+    // Send low-stock email notification
+    const emailSubject = `Low Stock Alert for ${firstLineItem.name}`;
+    await sendLowstockMail(
+      seller.email,        // Seller's email
+      emailSubject,        // Email subject
+      seller.name,         // Seller's name
+      firstLineItem.name,  // Product name
+      firstLineItem.quantity // Product quantity
+    );
+  } catch (error) {
+    console.error('Error retrieving seller details or sending email:', error);
+  }
+
+
 
   // Return the extracted details
   return {
@@ -307,12 +354,13 @@ export async function sendCustomerEmail(
 }
 
 // Example usage
-const rawData = {
-  topic: "ORDERS_CREATE",
-  shop: "quickstart-64fd9d6b.myshopify.com",
-  body: '{"id":5762269610149,"name":"#1012","total_price":"238.47","currency":"EUR","email":"anshumanrishi27@gmail.com","customer":{"first_name":"test","last_name":"test","default_address":{"address1":"vara","city":"Varanasi","province":"Uttar Pradesh","country":"India"}},"line_items":[{"name":"Bramhand","quantity":3,"price":"74.99"}]}',
-};
+// const rawData = {
+//   topic: "ORDERS_CREATE",
+//   shop: "quickstart-64fd9d6b.myshopify.com",
+//   body: '{"id":5762269610149,"name":"#1012","total_price":"238.47","currency":"EUR","email":"anshumanrishi27@gmail.com","customer":{"first_name":"test","last_name":"test","default_address":{"address1":"vara","city":"Varanasi","province":"Uttar Pradesh","country":"India"}},"line_items":[{"name":"Bramhand","quantity":3,"price":"74.99"}]}',
+// };
+// const baseUrl = "https://example.com";
 
-extractOrderDetails(rawData).then((orderDetails) => {
-  console.log(orderDetails);
-});
+// extractOrderDetails(rawData, baseUrl).then((orderDetails) => {
+//   console.log(orderDetails);
+// });

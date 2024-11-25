@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
 
   try {
     // Parse the raw body from the request
+    // console.log(req);
     const rawBody = await req.text();
+    // const parsedData = JSON.parse(rawBody);
 
     // Validate the webhook
     const { valid } = await Shopify.webhooks.validate({
@@ -23,12 +25,33 @@ export async function POST(req: NextRequest) {
       rawResponse: NextResponse,
     });
     // console.log(valid,"orders");
-    console.log(rawBody);
+    console.log('rawbody', rawBody);
+    const parsedData = await JSON.parse(rawBody);
+    console.log(parsedData);
+
+
     // await axios.post("https://ed14-2401-4900-3dcd-a146-f8-a162-9ac3-e622.ngrok-free.app/api/fucwebhook/order", rawBody);
     // await axios.post("https://ed14-2401-4900-3dcd-a146-f8-a162-9ac3-e622.ngrok-free.app/api/fucwebhook/lowreturn", rawBody);
 
+    // Dynamically construct the base URL
+    const protocol = req.headers.get("x-forwarded-proto") || "http";
+    const host = req.headers.get("host");
+    const baseUrl = `${protocol}://${host}`;
 
-    extractOrderDetails(rawBody);
+    // console.log("Base URL:", baseUrl);
+    const contentType = req.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+    if (contentType !== 'application/json') {
+      throw new Error('Invalid content type');
+    }
+
+
+    if (baseUrl && parsedData) {
+      console.log('parseddataif con',parsedData)
+      console.log('if condition', baseUrl);
+      await extractOrderDetails(parsedData, baseUrl);
+    }
+
 
     if (!valid) {
       console.error("Invalid webhook call");

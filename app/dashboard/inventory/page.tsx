@@ -52,6 +52,30 @@ export default function InventoryPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [responseData, setResponseData] = useState(null);
+    const [demandData, setDemandData] = useState(null);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.post('http://localhost:3000/api/ai/demand', {
+    //                 body: JSON.stringify({
+    //                     item_id: 'ITEM9999',
+    //                     city: 'ExampleCity',
+    //                     date: '2024-07-15',
+    //                     quantity: 50,
+    //                     category: 'Electronics',
+    //                 }),
+    //             });
+    //             setResponseData(response.data);
+    //         } catch (error: any) {
+    //             console.error("Error fetching data:", error);
+    //             // setResponseData({ error: "Failed to fetch data" });
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -77,10 +101,100 @@ export default function InventoryPage() {
         try {
             const response = await axios.get('/api/sellerId');
             const { sellerId }: { sellerId: string } = response.data;
-            const res = await axios.post('/api/shopify/pushProduct', { product,sellerId });
+            const res = await axios.post('/api/shopify/pushProduct', { product, sellerId });
             console.log('Product pushed successfully:', res.data);
         } catch (error) {
             console.error('Error pushing product to Shopify:', error);
+        }
+    };
+
+    const getPredictedPrice = async (selectedProduct: Product) => {
+        // console.log('enter')
+        if (!selectedProduct) {
+            console.error("No product selected");
+            return;
+        }
+
+        try {
+            const test = selectedProduct.variants?.reduce(
+                (total, variant) => total + variant.inventoryQty,
+                0
+            )
+            console.log(test);
+            const productData = {
+                item_id: selectedProduct.id || "ITEM9999",
+                city: "ExampleCity", // Default value
+                date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
+                quantity: selectedProduct.variants?.reduce(
+                    (total, variant) => total + variant.inventoryQty,
+                    0
+                ) || 50, // Default value
+                category: selectedProduct.productType || "Books", // Default value
+            };
+
+            const response = await fetch('/api/ai/demand', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setDemandData(data.prediction);
+        } catch (error: any) {
+            console.error("Error fetching data:", error);
+            // setResponseData({ error: "Failed to fetch data" });
+        }
+    };
+    const getPredictedDemand = async (selectedProduct: Product) => {
+        // console.log('enter')
+        if (!selectedProduct) {
+            console.error("No product selected");
+            return;
+        }
+
+        try {
+            const test = selectedProduct.variants?.reduce(
+                (total, variant) => total + variant.inventoryQty,
+                0
+            )
+            console.log(test);
+            const productData = {
+                item_id: selectedProduct.id || "ITEM9999",
+                city: "ExampleCity", // Default value
+                date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
+                quantity: selectedProduct.variants?.reduce(
+                    (total, variant) => total + variant.inventoryQty,
+                    0
+                ) || 50, // Default value
+                category: selectedProduct.productType || "Books", // Default value
+                price: selectedProduct.variants[0].price
+            };
+
+            const response = await fetch('/api/ai/price', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+            setResponseData(data.prediction);
+        } catch (error: any) {
+            console.error("Error fetching data:", error);
+            // setResponseData({ error: "Failed to fetch data" });
         }
     };
 
@@ -192,7 +306,7 @@ export default function InventoryPage() {
                 </Table>
             </div>
 
-            {selectedProduct && (
+            {/* {selectedProduct && (
                 <Dialog open={!!selectedProduct} onOpenChange={closeDialog}>
                     <DialogContent>
                         <DialogHeader>
@@ -225,12 +339,119 @@ export default function InventoryPage() {
                                 ))}
                             </div>
                         </div>
+                        {responseData}
+                        <Button onClick={() => getPredictedPrice(selectedProduct)} className="mt-4">
+                            AI Price
+                        </Button>
+
                         <Button onClick={closeDialog} className="mt-4">
                             Close
                         </Button>
                     </DialogContent>
                 </Dialog>
+            )} */}
+            {selectedProduct && (
+                <Dialog open={!!selectedProduct} onOpenChange={closeDialog}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="text-lg font-bold">
+                                Product Details
+                            </DialogTitle>
+                            <DialogDescription className="text-gray-500">
+                                Explore the details of the selected product and get an AI-suggested price.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-6">
+
+                            <div className="border-b pb-4">
+                                <p className="text-sm text-gray-600">
+                                    <strong>Product ID:</strong> {selectedProduct.id}
+                                </p>
+                                <p className="text-lg font-medium text-gray-800">
+                                    <strong>Title:</strong> {selectedProduct.title}
+                                </p>
+                            </div>
+
+
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Options:</strong>{" "}
+                                    {selectedProduct.options.map((o) => o.name).join(", ")}
+                                </p>
+                            </div>
+
+
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Variants:</strong>
+                                </p>
+                                <ul className="pl-4 list-disc text-sm text-gray-700">
+                                    {selectedProduct.variants.map((variant) => (
+                                        <li key={variant.id}>
+                                            <strong>{variant.title}</strong> - ₹{variant.price.toFixed(2)} -{" "}
+                                            {variant.inventoryQty} units
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+
+                            <div>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Images:</strong>
+                                </p>
+                                <div className="flex gap-2">
+                                    {selectedProduct.images.map((image) => (
+                                        <img
+                                            key={image.id}
+                                            src={image.url}
+                                            alt="Product Image"
+                                            className="w-24 h-24 object-cover border rounded"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+
+                            <div className="mt-4 p-4 border rounded bg-gray-50">
+                                <p className="text-md font-semibold text-gray-800">
+                                    AI Suggested Price & Deman forcast:
+                                </p>
+                                {responseData ? (
+                                    <div className=''>
+                                    <p className="text-xl font-bold">
+                                        Best Price to sell :
+                                        <p className="text-xl font-bold text-green-600">₹{demandData}</p>
+                                        
+                                    </p>
+                                    <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {responseData}</p> (moderate)</p>
+                                    </div>
+                                    
+                                ) : (
+                                    <p className="text-sm text-gray-500">
+                                        Click the button below to fetch the Suggested price.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+
+                        <div className="mt-6 flex justify-end gap-4">
+                            <Button onClick={() => getPredictedPrice(selectedProduct)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                                Get AI Price
+                            </Button>
+                            <Button onClick={() => getPredictedDemand(selectedProduct)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                                Get AI Forcast
+                            </Button>
+                            <Button onClick={closeDialog} className="bg-gray-300 px-4 py-2 rounded">
+                                Close
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             )}
+
         </div>
     );
 }
