@@ -7,6 +7,13 @@ import uploadProductImages from '@/app/utils/uploader';
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import ReactMarkdown from 'react-markdown';
 
+import {
+  
+  Sparkle,
+
+  
+} from "lucide-react";
+
 type Option = {
   name: string;
   values: string;
@@ -194,69 +201,124 @@ const ProductForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold text-gray-700">Create Product</h2>
-
-      <div>
-        <label className="block text-gray-600">Title</label>
-        <input
+    
+    <form onSubmit={handleSubmit} className="space-y-6 bg-neutral-50 p-6 rounded-lg ml-10 mr-10 shadow-lg mx-auto">
+      <h2 className="text-2xl font-semibold">Add New product</h2>
+      <div className='flex flex-row space-x-10'>
+      <div className='bg-neutral-100 px-8 rounded-md w-[90vh]'>
+        <label className='block font-semibold text-lg py-6'>General Information</label>
+        <label className="block font-semibold">Product Name</label>
+        <input 
           type="text"
           value={product.title}
           onChange={(e) => handleInputChange(e, 'title')}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 mt-1 border border-gray-300 bg-neutral-200 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-700"
           required
         />
-      </div>
+    
 
-      <div>
-        <label className="block text-gray-600">Body HTML</label>
+      <div className='mt-5'>
+        <label className="block font-semibold ">Product Description</label>
         <textarea
           value={product.bodyHtml}
           onChange={(e) => handleTextareaChange(e, 'bodyHtml')}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 mt-1 border border-gray-300 bg-neutral-200  rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-700"
           required
         />
         {/* <button onClick={handleRecipeModifier} className=''>Ai suggestions</button> */}
         <button
           type="button"
           onClick={handleRecipeModifier}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-        >
-          Ai suggestions
-        </button>
-      </div>
-
-      <div>
-        <label className="block text-gray-600">Vendor</label>
+          className="px-6 bg-purple-300 text-white rounded-md py-3 my-3 hover:bg-purple-400 transition duration-200"
+          >
+            <div className='flex flex-row  text-black'>
+            <p className='pt-1'>AI Suggestions</p>
+              <Sparkle className="h-8 w-8 px-2" />
+              
+          
+            </div>
+         
+           
+          </button>
+          <p className='text-gray-500 pb-5'>(Click to write Discription with Gen AI)</p>
+          <div>
+        <label className="block font-semibold">Vendor Name</label>
         <input
           type="text"
           value={product.vendor}
           onChange={(e) => handleInputChange(e, 'vendor')}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 mt-1 border border-gray-300 bg-neutral-200  rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-700 mb-5"
           required
         />
       </div>
+        </div>
+        </div>
 
+        <div>
+          <div className='bg-neutral-100 px-8 rounded-md h-full w-full'>
+
+          <label className="block font-semibold text-lg py-6">Product Image</label>
+
+          <div className='flex justify-start items-center w-full'>
+          {
+              productImages.map((image, i)=>{
+                  return <div key={i} className='rounded-lg m-4 flex-col flex justify-center items-center'>
+                              <Cross fill='black' className='text-gray-700 bg-white rounded-full p-1 size-6 rotate-[45deg] cursor-pointer relative top-4 -right-5' onClick={()=>removeImage(image)}/>
+                              <Image src={URL.createObjectURL(image)} alt={`product-img-${i}`} width={50} height={50} />
+                          </div>
+              })
+          }
+            </div>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+
+              
+              
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          id="image-upload"
+          onChange={handleImageChange}
+        />
+        <label
+          htmlFor="image-upload"
+          className="cursor-pointer flex flex-col items-center"
+        >
+          <Upload className="h-12 w-12 text-gray-400" />
+          <span className="mt-2 text-sm text-gray-600">
+            Drop images here or click to upload
+          </span>
+        </label>
+      </div>
       <div>
-        <label className="block text-gray-600">Product Type</label>
+        <label className='block font-semibold py-3'>Product Type</label>
         <input
           type="text"
           value={product.productType}
           onChange={(e) => handleInputChange(e, 'productType')}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 mt-1 border border-gray-300 bg-neutral-200  rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-700 mb-5"
           required
         />
-      </div>
-
-      <div>
-        <label className="block text-gray-600">Tags</label>
+            </div>
+            <div>
+        <label className='block font-semibold py-3'>Tags</label>
         <input
           type="text"
           value={product.tags}
           onChange={(e) => handleInputChange(e, 'tags')}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 mt-1 border border-gray-300 bg-neutral-200  rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-700 mb-5"
         />
       </div>
+
+          </div>
+        </div>
+
+        </div>
+   
+          <div  className='bg-neutral-100 px-8 rounded-md w-full'>
+     
+    
 
       {/* <div>
         <label className="block text-gray-600">Seller ID</label>
@@ -270,8 +332,9 @@ const ProductForm = () => {
       </div> */}
 
       {/* Options Section */}
+
       <div>
-        <label className="block text-gray-600">Options</label>
+        <label className="block font-semibold pt-5 pb-3">Options</label>
         {product.options.map((option, index) => (
           <div key={index} className="flex space-x-4 mb-4">
             <input
@@ -295,7 +358,7 @@ const ProductForm = () => {
         <button
           type="button"
           onClick={addOption}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+           className="px-6 bg-purple-300 rounded-md py-3 my-3 hover:bg-purple-400 transition duration-200"
         >
           Add Option
         </button>
@@ -303,7 +366,7 @@ const ProductForm = () => {
 
       {/* Variants Section */}
       <div>
-        <label className="block text-gray-600">Variants</label>
+        <label className="block font-semibold pt-5 pb-3">Variants</label>
         {product.variants.map((variant, index) => (
           <div key={index} className="flex space-x-4 mb-4">
             <input
@@ -350,7 +413,8 @@ const ProductForm = () => {
         <button
           type="button"
           onClick={addVariant}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+          className="px-6 bg-purple-300 rounded-md py-3 my-3 hover:bg-purple-400 transition duration-200"
+
         >
           Add Variant
         </button>
@@ -379,44 +443,17 @@ const ProductForm = () => {
         </button>
       </div> */}
 
-      <div className='flex justify-start items-center w-full'>
-          {
-              productImages.map((image, i)=>{
-                  return <div key={i} className='rounded-lg m-4 flex-col flex justify-center items-center'>
-                              <Cross fill='black' className='text-gray-700 bg-white rounded-full p-1 size-6 rotate-[45deg] cursor-pointer relative top-4 -right-5' onClick={()=>removeImage(image)}/>
-                              <Image src={URL.createObjectURL(image)} alt={`product-img-${i}`} width={50} height={50} />
-                          </div>
-              })
-          }
-      </div>
-
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          className="hidden"
-          id="image-upload"
-          onChange={handleImageChange}
-        />
-        <label
-          htmlFor="image-upload"
-          className="cursor-pointer flex flex-col items-center"
-        >
-          <Upload className="h-12 w-12 text-gray-400" />
-          <span className="mt-2 text-sm text-gray-600">
-            Drop images here or click to upload
-          </span>
-        </label>
-      </div>
-
+  
+</div>
+    
       <button
         type="submit"
         className="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
       >
         Submit
       </button>
-    </form>
+      </form>
+     
   );
 };
 
