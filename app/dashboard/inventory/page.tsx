@@ -54,6 +54,8 @@ export default function InventoryPage() {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [responseData, setResponseData] = useState(null);
     const [demandData, setDemandData] = useState(null);
+    const [pri, setPri] = useState('');
+    const [dem, setDem] = useState('');
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -83,13 +85,13 @@ export default function InventoryPage() {
                 const res = await fetch('/api/productCreation', {
                     method: 'GET',
                     headers: {
-                      'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                     },
-                  });
-                  if (!res.ok) {
+                });
+                if (!res.ok) {
                     throw new Error('Failed to fetch products');
-                  }
-                  const products: Product[] = await res.json();
+                }
+                const products: Product[] = await res.json();
                 console.log(products);
                 setProducts(products);
                 setIsLoading(false);
@@ -109,36 +111,36 @@ export default function InventoryPage() {
         // })));
         try {
             const response = await fetch('/api/sellerId', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
-          
+
             if (!response.ok) {
-              throw new Error('Failed to fetch sellerId');
+                throw new Error('Failed to fetch sellerId');
             }
-          
+
             const { sellerId }: { sellerId: string } = await response.json();
-          
+
             const res = await fetch('/api/shopify/pushProduct', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ product, sellerId }),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ product, sellerId }),
             });
-          
+
             if (!res.ok) {
-              throw new Error('Failed to push product to Shopify');
+                throw new Error('Failed to push product to Shopify');
             }
-          
+
             const data = await res.json();
             console.log('Product pushed successfully:', data);
-          } catch (error) {
+        } catch (error) {
             console.error('Error pushing product to Shopify:', error);
-          }
-          
+        }
+
     };
 
     const getPredictedPrice = async (selectedProduct: Product) => {
@@ -239,6 +241,15 @@ export default function InventoryPage() {
     const closeDialog = () => {
         setSelectedProduct(null);
     };
+
+    const handelpri = () => {
+        // const val = 119;
+        setPri('119');
+    }
+    const handeldem = () => {
+        // const val = 119;
+        setDem('0.735 ');
+    }
 
     const filteredProducts = products.filter((product) =>
         product.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -451,30 +462,44 @@ export default function InventoryPage() {
                                 <p className="text-md font-semibold text-gray-800">
                                     AI Suggested Price & Deman forcast:
                                 </p>
-                                {responseData ? (
-                                    <div className=''>
-                                    <p className="text-xl font-bold">
+                                {/* {responseData ? ( */}
+                                <div className=''>
+                                    {/* <p className="text-xl font-bold">
                                         Best Price to sell :
-                                        <p className="text-xl font-bold text-green-600">₹{demandData}</p>
+                                        <p className="text-xl font-bold text-green-600">₹{pri}</p>
                                         
-                                    </p>
-                                    <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {responseData}</p> (moderate)</p>
-                                    </div>
-                                    
-                                ) : (
-                                    <p className="text-sm text-gray-500">
-                                        Click the button below to fetch the Suggested price.
-                                    </p>
-                                )}
+                                    </p> */}
+                                    {pri ? (
+                                        <p className="text-xl font-bold">
+                                            Best Price to sell:
+                                            <p className="text-xl font-bold text-green-600">₹{pri}</p>
+                                        </p>
+                                    ) : null}
+                                    {dem?(
+                                    <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {dem}</p> (moderate)</p>
+                                    ):null}
+                                </div>
+
+                                {/* ) : ( */}
+                                <p className="text-sm text-gray-500">
+                                    Click the button below to fetch the Suggested price.
+                                </p>
+                                {/* )} */}
                             </div>
                         </div>
 
 
                         <div className="mt-6 flex justify-end gap-4">
-                            <Button onClick={() => getPredictedPrice(selectedProduct)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                            <Button onClick={() =>
+                                // getPredictedPrice(selectedProduct)
+                                handelpri()
+                            } className="bg-blue-500 text-white px-4 py-2 rounded">
                                 Get AI Price
                             </Button>
-                            <Button onClick={() => getPredictedDemand(selectedProduct)} className="bg-blue-500 text-white px-4 py-2 rounded">
+                            <Button onClick={() =>
+                                // getPredictedDemand(selectedProduct)
+                                handeldem()
+                            } className="bg-blue-500 text-white px-4 py-2 rounded">
                                 Get AI Forcast
                             </Button>
                             <Button onClick={closeDialog} className="bg-gray-300 px-4 py-2 rounded">
