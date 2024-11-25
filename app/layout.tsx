@@ -4,6 +4,10 @@ import "./globals.css";
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { UserDetailsProvider } from "./context/UserdetailsProvider";
 import ClientLayout from "@/components/ClientLayout";
+import { CopilotPopup } from "@copilotkit/react-ui";
+import { CopilotKit } from "@copilotkit/react-core";
+
+import "@copilotkit/react-ui/styles.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,10 +36,13 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+             <CopilotKit runtimeUrl="/api/copilotkit">
           <ConfigureAmplifyClientSide />
           <ClientLayout>
             {children}
           </ClientLayout>
+          
+      </CopilotKit>
         </body>
 
       </UserDetailsProvider>

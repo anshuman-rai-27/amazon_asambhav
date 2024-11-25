@@ -1,6 +1,5 @@
 import Shopify from "@/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient();
 import { extractOrderDetails, sendCustomerEmail } from "@/app/utils/mailer";

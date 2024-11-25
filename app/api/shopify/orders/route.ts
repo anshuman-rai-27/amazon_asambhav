@@ -53,98 +53,98 @@ export async function GET(req: Request) {
             return new NextResponse("No orders found", { status: 404 });
         }
 
-        for (const order of shopifyOrders.orders) {
-            let customer = null;
+        // for (const order of shopifyOrders.orders) {
+        //     let customer = null;
         
-            // Check if customer data exists in the order
-            if (order.customer && order.customer.id) {
-                // Create or connect the Customer
-                customer = await prisma.customer.upsert({
-                    where: { id: order.customer.id.toString() },
-                    update: {
-                        email: order.customer.email || "",
-                        firstName: order.customer.first_name || "",
-                        lastName: order.customer.last_name || "",
-                        phone: order.customer.phone || null,
-                        tags: order.customer.tags ? order.customer.tags.split(",") : [],
-                    },
-                    create: {
-                        id: order.customer.id.toString(),
-                        shopifyId: BigInt(order.customer.id),
-                        email: order.customer.email || "",
-                        firstName: order.customer.first_name || "",
-                        lastName: order.customer.last_name || "",
-                        phone: order.customer.phone || null,
-                        tags: order.customer.tags ? order.customer.tags.split(",") : [],
-                    },
-                });
-            }
+        //     // Check if customer data exists in the order
+        //     if (order.customer && order.customer.id) {
+        //         // Create or connect the Customer
+        //         customer = await prisma.customer.upsert({
+        //             where: { id: order.customer.id.toString() },
+        //             update: {
+        //                 email: order.customer.email || "",
+        //                 firstName: order.customer.first_name || "",
+        //                 lastName: order.customer.last_name || "",
+        //                 phone: order.customer.phone || null,
+        //                 tags: order.customer.tags ? order.customer.tags.split(",") : [],
+        //             },
+        //             create: {
+        //                 id: order.customer.id.toString(),
+        //                 shopifyId: BigInt(order.customer.id),
+        //                 email: order.customer.email || "",
+        //                 firstName: order.customer.first_name || "",
+        //                 lastName: order.customer.last_name || "",
+        //                 phone: order.customer.phone || null,
+        //                 tags: order.customer.tags ? order.customer.tags.split(",") : [],
+        //             },
+        //         });
+        //     }
         
-            const resOrder = await prisma.order.upsert({
-                where: { shopifyId: BigInt(order.id) },
-                update: {
-                    status: order.financial_status,
-                    totalPrice: parseFloat(order.total_price),
-                    currency: order.currency,
-                    fulfillmentStatus: order.fulfillment_status,
-                    financialStatus: order.financial_status,
-                    Customer: customer
-                        ? { connect: { id: customer.id } }
-                        : undefined, // Ensure a Customer is connected if available
-                    billingAddress: order.billing_address
-                        ? {
-                            connectOrCreate: {
-                                where: { id: order.billing_address.id?.toString() || "" },
-                                create: mapAddress(order.billing_address),
-                            },
-                        }
-                        : undefined, // Skip if no billing address
+        //     const resOrder = await prisma.order.upsert({
+        //         where: { shopifyId: BigInt(order.id) },
+        //         update: {
+        //             status: order.financial_status,
+        //             totalPrice: parseFloat(order.total_price),
+        //             currency: order.currency,
+        //             fulfillmentStatus: order.fulfillment_status,
+        //             financialStatus: order.financial_status,
+        //             Customer: customer
+        //                 ? { connect: { id: customer.id } }
+        //                 : undefined, // Ensure a Customer is connected if available
+        //             billingAddress: order.billing_address
+        //                 ? {
+        //                     connectOrCreate: {
+        //                         where: { id: order.billing_address.id?.toString() || "" },
+        //                         create: mapAddress(order.billing_address),
+        //                     },
+        //                 }
+        //                 : undefined, // Skip if no billing address
         
-                    shippingAddress: order.shipping_address
-                        ? {
-                            connectOrCreate: {
-                                where: { id: order.shipping_address.id?.toString() || "" },
-                                create: mapAddress(order.shipping_address),
-                            },
-                        }
-                        : undefined, // Skip if no shipping address
-                },
-                create: {
-                    shopifyId: BigInt(order.id),
-                    Seller: { connect: { id: sellerId } },
-                    status: order.financial_status,
-                    totalPrice: parseFloat(order.total_price),
-                    currency: order.currency,
-                    fulfillmentStatus: order.fulfillment_status,
-                    financialStatus: order.financial_status,
-                    Customer: customer
-                        ? { connect: { id: customer.id } }
-                        : undefined,
-                    billingAddress: order.billing_address
-                        ? { create: mapAddress(order.billing_address) }
-                        : undefined,
-                    shippingAddress: order.shipping_address
-                        ? { create: mapAddress(order.shipping_address) }
-                        : undefined,
-                },
-            });
+        //             shippingAddress: order.shipping_address
+        //                 ? {
+        //                     connectOrCreate: {
+        //                         where: { id: order.shipping_address.id?.toString() || "" },
+        //                         create: mapAddress(order.shipping_address),
+        //                     },
+        //                 }
+        //                 : undefined, // Skip if no shipping address
+        //         },
+        //         create: {
+        //             shopifyId: BigInt(order.id),
+        //             Seller: { connect: { id: sellerId } },
+        //             status: order.financial_status,
+        //             totalPrice: parseFloat(order.total_price),
+        //             currency: order.currency,
+        //             fulfillmentStatus: order.fulfillment_status,
+        //             financialStatus: order.financial_status,
+        //             Customer: customer
+        //                 ? { connect: { id: customer.id } }
+        //                 : undefined,
+        //             billingAddress: order.billing_address
+        //                 ? { create: mapAddress(order.billing_address) }
+        //                 : undefined,
+        //             shippingAddress: order.shipping_address
+        //                 ? { create: mapAddress(order.shipping_address) }
+        //                 : undefined,
+        //         },
+        //     });
         
-            // console.log(resOrder, "order");
+        //     // console.log(resOrder, "order");
         
-            for (const lineItem of order.line_items) {
-                const res = await prisma.orderProduct.create({
-                    data: {
-                        orderId: resOrder.id,
-                        productId: lineItem.product_id
-                            ? lineItem.product_id.toString()
-                            : "9c347b12-065d-4cd7-9bae-692c2b06efa2", // Provide a default or skip
-                        quantity: lineItem.quantity,
-                        price: parseFloat(lineItem.price),
-                    },
-                });
-                // console.log(res, "line items");
-            }
-        }
+        //     for (const lineItem of order.line_items) {
+        //         const res = await prisma.orderProduct.create({
+        //             data: {
+        //                 orderId: resOrder.id,
+        //                 productId: lineItem.product_id
+        //                     ? lineItem.product_id.toString()
+        //                     : "9c347b12-065d-4cd7-9bae-692c2b06efa2", // Provide a default or skip
+        //                 quantity: lineItem.quantity,
+        //                 price: parseFloat(lineItem.price),
+        //             },
+        //         });
+        //         // console.log(res, "line items");
+        //     }
+        // }
         
 
         return NextResponse.json({ message: "Orders synchronized successfully.",orders:shopifyOrders });

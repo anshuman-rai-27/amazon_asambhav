@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const { recipe} = await req.json();
 
   // Create a prompt based on the modifier type
-  let prompt = `Modify the description for the following product: ${recipe}.\nProvide the response with proper spacing and headings without ** signs.`;
+  let prompt = `provide the description for the following product: ${recipe}.\nProvide the response with proper spacing and headings without ** signs.`;
 
 
   const resp = await groq.chat.completions.create({

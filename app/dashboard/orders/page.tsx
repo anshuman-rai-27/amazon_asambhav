@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import axios from 'axios';
 import { format } from 'date-fns';
 
 type Order = {
@@ -43,8 +42,14 @@ export default function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('/api/shopify/orders');
-        const data = response.data;
+        const response = await fetch('/api/shopify/orders', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        
 
         const mappedOrders: Order[] = data.orders.orders.map((order: any) => ({
           id: order.id.toString(),

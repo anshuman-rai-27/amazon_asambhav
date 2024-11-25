@@ -1,7 +1,7 @@
 "use client"
 
 import DeveloperGuide from '@/components/developer';
-import axios from 'axios';
+
 import React, { ReactNode, useEffect, useState } from 'react';
 
 interface FormInputProps {
@@ -66,44 +66,77 @@ function Settings() {
     });
   };
 
-  const handleOnsubmit = async(e: React.FormEvent) => {
+  const handleOnsubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("formdata: ", personalInfo)
+  
+    console.log("formdata: ", personalInfo);
     try {
-      const res = await axios.get('/api/sellerId');
-      const { sellerId }: { sellerId: string } = res.data;
-
-      const response = await axios.put('/api/profile', { ...personalInfo, sellerId });
-      console.log("profile updated successfully: ", response.data);
+      const res = await fetch('/api/sellerId', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to fetch sellerId');
+      }
+  
+      const { sellerId }: { sellerId: string } = await res.json();
+  
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...personalInfo, sellerId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+  
+      const data = await response.json();
+      console.log("Profile updated successfully: ", data);
     } catch (error) {
       console.error('Error updating the profile: ', error);
     }
-
-  }
-
-  const getUserInfo = async() => {
+  };
+  
+  const getUserInfo = async () => {
     try {
-      const response = await axios.get('/api/profile', {
-        withCredentials: true
+      const response = await fetch('/api/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       });
-      console.log('Fetched user successfully :', response.data);
-      const user = response.data.seller;
-
-      setPersonalInfo({ ...personalInfo, 
-        name: user.name, 
-        email: user.email, 
-        phone: user.phone, 
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+  
+      const data = await response.json();
+      console.log('Fetched user successfully:', data);
+      const user = data.seller;
+  
+      setPersonalInfo({
+        ...personalInfo,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
         address: user.address,
         city: user.city,
         country: user.country,
         pincode: user.pincode,
-        state: user.state
+        state: user.state,
       });
     } catch (error) {
       console.error('Error fetching the user: ', error);
     }
-  }
+  };
+  
 
   useEffect(()=>{
     getUserInfo();

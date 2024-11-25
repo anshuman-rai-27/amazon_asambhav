@@ -1,6 +1,15 @@
 import React from "react";
+import { cookies } from 'next/headers';
+
+const getSellerIdFromCookie = (): string | null => {
+  const cookieStore = cookies(); // Get the cookies in the server context
+  const sellerId = cookieStore.get('SellerId')?.value || null;
+  return sellerId;
+};
 
 const DeveloperGuide = () => {
+  const sellerId = getSellerIdFromCookie();
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-bold mb-6">Vyapaar Plugins Developer Guide</h1>
@@ -14,13 +23,13 @@ const DeveloperGuide = () => {
         <p className="text-gray-600 mb-4">
           Use the Orders API to fetch, create, and update orders associated with a seller.
         </p>
-        
+
         {/* GET Orders */}
         <div className="mb-6">
           <h3 className="text-lg font-medium">GET /api/endpoints/orders</h3>
           <p className="text-gray-500 mb-2">Fetch all orders for a specific seller.</p>
           <pre className="bg-gray-800 text-white p-4 rounded mb-2">
-{`GET /api/endpoints/orders?sellerId=06d06d06-8232-481b-959b-a2852300156d`}
+{`GET /api/endpoints/orders?sellerId=${sellerId || '{sellerId}'}`}
           </pre>
           <p className="text-gray-500">**Response:**</p>
           <pre className="bg-gray-800 text-white p-4 rounded">
@@ -53,7 +62,7 @@ const DeveloperGuide = () => {
 Content-Type: application/json
 
 {
-  "sellerId": "06d06d06-8232-481b-959b-a2852300156d",
+  "sellerId": "${sellerId || '{sellerId}'}",
   "status": "Processing",
   "totalPrice": 199.99,
   "currency": "USD",
@@ -67,7 +76,7 @@ Content-Type: application/json
   "status": "Processing",
   "totalPrice": "199.99",
   "currency": "USD",
-  "sellerId": "06d06d06-8232-481b-959b-a2852300156d"
+  "sellerId": "${sellerId || '{sellerId}'}"
 }`}
           </pre>
         </div>
@@ -85,7 +94,7 @@ Content-Type: application/json
           <h3 className="text-lg font-medium">GET /api/endpoints/products</h3>
           <p className="text-gray-500 mb-2">Fetch all products for a specific seller.</p>
           <pre className="bg-gray-800 text-white p-4 rounded mb-2">
-{`GET /api/endpoints/products?sellerId=06d06d06-8232-481b-959b-a2852300156d`}
+{`GET /api/endpoints/products?sellerId=${sellerId || '{sellerId}'}`}
           </pre>
           <p className="text-gray-500">**Response:**</p>
           <pre className="bg-gray-800 text-white p-4 rounded">
@@ -115,7 +124,7 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "sellerId": "06d06d06-8232-481b-959b-a2852300156d",
+  "sellerId": "${sellerId || '{sellerId}'}",
   "title": "T-shirt",
   "bodyHtml": "High-quality cotton T-shirt.",
   "productType": "Apparel",
@@ -131,7 +140,7 @@ Content-Type: application/json
   "productType": "Apparel",
   "tags": ["clothing", "summer"],
   "vendor": "Vyapaar Vendor",
-  "sellerId": "06d06d06-8232-481b-959b-a2852300156d"
+  "sellerId": "${sellerId || '{sellerId}'}"
 }`}
           </pre>
         </div>

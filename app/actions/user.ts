@@ -5,7 +5,6 @@ import { authenticatedUser } from '@/app/utils/amplify-server-utils';
 import { NextRequest, NextResponse } from "next/server";
 // import { cookies } from "next/headers";
 import { serialize } from 'cookie';
-import axios from "axios";
 
 const prisma = new PrismaClient();
 

@@ -80,9 +80,18 @@ export default function InventoryPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get<Product[]>('/api/productCreation');
-                console.log(res);
-                setProducts(res.data);
+                const res = await fetch('/api/productCreation', {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
+                  if (!res.ok) {
+                    throw new Error('Failed to fetch products');
+                  }
+                  const products: Product[] = await res.json();
+                console.log(products);
+                setProducts(products);
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -99,13 +108,37 @@ export default function InventoryPage() {
         //     "values": option.values,
         // })));
         try {
-            const response = await axios.get('/api/sellerId');
-            const { sellerId }: { sellerId: string } = response.data;
-            const res = await axios.post('/api/shopify/pushProduct', { product, sellerId });
-            console.log('Product pushed successfully:', res.data);
-        } catch (error) {
+            const response = await fetch('/api/sellerId', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+          
+            if (!response.ok) {
+              throw new Error('Failed to fetch sellerId');
+            }
+          
+            const { sellerId }: { sellerId: string } = await response.json();
+          
+            const res = await fetch('/api/shopify/pushProduct', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ product, sellerId }),
+            });
+          
+            if (!res.ok) {
+              throw new Error('Failed to push product to Shopify');
+            }
+          
+            const data = await res.json();
+            console.log('Product pushed successfully:', data);
+          } catch (error) {
             console.error('Error pushing product to Shopify:', error);
-        }
+          }
+          
     };
 
     const getPredictedPrice = async (selectedProduct: Product) => {

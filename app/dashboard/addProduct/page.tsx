@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Cross, Upload } from 'lucide-react';
 import Image from 'next/image';
 import uploadProductImages from '@/app/utils/uploader';
@@ -189,15 +188,39 @@ const ProductForm = () => {
       return;
     }
 
-    const res = await axios.get('/api/sellerId');
-    const { sellerId }: { sellerId: string } = res.data;
+    const res = await fetch('/api/sellerId', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch sellerId');
+    }
+    
+    const { sellerId }: { sellerId: string } = await res.json();
     console.log("product data: ", product);
+    
     try {
-      const response = await axios.post('/api/productCreation', { ...product, images, sellerId });
-      console.log('Product created successfully:', response.data);
+      const response = await fetch('/api/productCreation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...product, images, sellerId }),
+      });
+    
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
+    
+      const data = await response.json();
+      console.log('Product created successfully:', data);
     } catch (error) {
       console.error('Error creating product:', error);
     }
+    
   };
 
   return (

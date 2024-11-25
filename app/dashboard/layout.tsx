@@ -39,10 +39,6 @@ import React, { useEffect, useState } from 'react';
 import { handleSignOut } from '../actions/cognitoActions';
 import { useRouter } from "next/navigation";
 import { Sidebar } from '@/components/sidebar';
-import { CopilotKit } from "@copilotkit/react-core";
-import { CopilotPopup } from "@copilotkit/react-ui";
-import "@copilotkit/react-ui/styles.css";
-import axios from 'axios';
 
 function Page({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -55,20 +51,32 @@ function Page({ children }: { children: React.ReactNode }) {
       acc[key] = value;
       return acc;
     }, {} as Record<string, string>);
-
+  
     if (cookies.SellerId) {
       setSellerId(cookies.SellerId);
     } else {
       // Fetch SellerId from the API if not found in cookies
-      axios.get('/api/sellerId')
-        .then(response => {
-          setSellerId(response.data.sellerId);
-          // Optionally, set the cookie for future requests
-          document.cookie = `SellerId=${response.data.sellerId}; path=/`;
+      fetch('/api/sellerId', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch SellerId');
+          }
+          return response.json();
         })
-        .catch(error => console.error('Error fetching SellerId:', error));
+        .then((data) => {
+          setSellerId(data.sellerId);
+          // Optionally, set the cookie for future requests
+          document.cookie = `SellerId=${data.sellerId}; path=/`;
+        })
+        .catch((error) => console.error('Error fetching SellerId:', error));
     }
   }, []);
+  
 
   const handleLogout = async () => {
     await handleSignOut();
@@ -79,21 +87,15 @@ function Page({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <CopilotKit runtimeUrl="/api/copilotkit">
+ 
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <main className="flex-1 overflow-y-auto bg-background">
         {children}
       </main>
     </div>
-    <CopilotPopup
-        instructions="As a description writer, your role is to assist users in adjusting and customizing their descriptions."
-        labels={{
-          title: "Description writer",
-          initial: "Hello! I'm here to assist you. I can help you modify dscriptions and suggest substitutions or alterations.",
-        }}
-      />
-    </CopilotKit>
+    
+    // </CopilotKit>
   );
 }
 

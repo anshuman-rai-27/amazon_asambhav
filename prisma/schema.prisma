@@ -14,23 +14,24 @@ model Seller {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   email        String        @unique
+  // token        String        @default(uuid())
   phone        String?
   address      String?
   city         String?
   country      String?
   pincode      String?
   state        String?
+  mcfShipments MCFShipment[]
   orders       Order[]
   products     Product[]
   session      Session?
-  mcfShipments MCFShipment[]
 }
 
 model Session {
   id          String    @id @default(uuid())
   sellerId    String    @unique
-  shop        String?
-  state       String?
+  shop        String
+  state       String
   isOnline    Boolean   @default(false)
   scope       String?
   expires     DateTime?
@@ -103,17 +104,17 @@ model Order {
   fulfillmentStatus String?
   shippingAddressId String?
   fulfillment       Fulfillment[]  @relation("OrderToFulfillment")
+  mcfShipments      MCFShipment[]  @relation("OrderToMCFShipment")
   billingAddress    Address?       @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
   Customer          Customer?      @relation(fields: [customerId], references: [id])
   Seller            Seller         @relation(fields: [sellerId], references: [id])
   shippingAddress   Address?       @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
   orderProducts     OrderProduct[] @relation("OrderToOrderProduct")
-  mcfShipments      MCFShipment[]  @relation("OrderToMCFShipment")
 }
 
 model OrderProduct {
   id            String   @id @default(uuid())
-  productId     String
+  productId     String   
   orderId       String
   quantity      Int
   price         Float
@@ -127,9 +128,9 @@ model OrderProduct {
 
 model Address {
   id                   String   @id @default(uuid())
-  firstName            String
-  lastName             String
-  address1             String
+  firstName            String?
+  lastName             String?
+  address1             String?
   address2             String?
   city                 String
   province             String
@@ -161,9 +162,9 @@ model Fulfillment {
 model Customer {
   id        String   @id @default(uuid())
   shopifyId BigInt?
-  email     String
-  firstName String
-  lastName  String
+  email     String?
+  firstName String?
+  lastName  String?
   phone     String?
   tags      String[]
   createdAt DateTime @default(now())
@@ -176,13 +177,13 @@ model MCFShipment {
   sellerId       String
   orderId        String
   status         String    @default("in_progress")
-  shippingMethod String // e.g., 'Standard', 'Express'
+  shippingMethod String
   address        String
   deliveryDate   DateTime
   trackingUrl    String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  Order          Order     @relation("OrderToMCFShipment", fields: [orderId], references: [id])
   Seller         Seller    @relation(fields: [sellerId], references: [id])
   items          Product[] @relation("MCFShipmentToProduct")
-  Order          Order     @relation("OrderToMCFShipment", fields: [orderId], references: [id])
 }

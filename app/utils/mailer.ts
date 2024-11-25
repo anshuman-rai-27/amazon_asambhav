@@ -1,5 +1,4 @@
 import { PinpointClient, SendMessagesCommand } from "@aws-sdk/client-pinpoint";
-import axios from "axios";
 
 // Initialize the Pinpoint client
 const client = new PinpointClient({
