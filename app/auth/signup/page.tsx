@@ -12,7 +12,15 @@ import { GetUserDetails } from '@/app/context/UserdetailsProvider'
 const signUpSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  // password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/\d/, 'Password must contain at least one digit')
+  .regex(/[@$!%*?&]/, 'Password must contain at least one special character'),
+
   repeatPassword: z.string(),
   agreeTerms: z.boolean().refine(val => val === true, 'You must agree to the terms of service'),
 }).refine((data) => data.password === data.repeatPassword, {
@@ -49,7 +57,7 @@ export default function SignUp() {
 
       const response = await handleSignUp(formData);
       const responseObj = JSON.parse(response);
-      console.log(responseObj)
+      console.log(responseObj);
 
       if(responseObj.success){
         console.log(responseObj.message)
