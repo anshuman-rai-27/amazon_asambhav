@@ -128,7 +128,7 @@ export const GET = async (req: Request, res: NextApiResponse) => {
     const cookieOptions = {
       httpOnly: true, // Ensure the cookie is only accessible by the server
       secure: process.env.NODE_ENV === 'production', // Ensure the cookie is secure in production
-      sameSite: true, // Allow cookie to be sent in cross-site requests (Lax is a good compromise)
+      sameSite: false, // Allow cookie to be sent in cross-site requests (Lax is a good compromise)
       path: '/', // Accessible throughout the entire domain
     };
 
