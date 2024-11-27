@@ -470,13 +470,13 @@ export default function InventoryPage() {
                                         <p className="text-xl font-bold text-green-600">₹{pri}</p>
                                         
                                     </p> */}
-                                    {responseData ? (
+                                    {demandData ? (
                                         <p className="text-xl font-bold">
                                             Best Price to sell:
                                             <p className="text-xl font-bold text-green-600">₹{demandData}</p>
                                         </p>
                                     ) : null}
-                                    {demandData?(
+                                    {responseData?(
                                     <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {responseData}</p> (moderate)</p>
                                     ):null}
                                 </div>
