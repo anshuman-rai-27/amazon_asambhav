@@ -37,16 +37,13 @@ export const GET = async (req: Request, res: NextApiResponse) => {
       })
     );
 
-    // console.log(parsedCookies);
+    console.log(parsedCookies);
     
     let HOST = 'localhost'; // Default value for HOST
     if (parsedCookies.HOST === 'localhost') {
       // Your logic here
       HOST = process.env.HOST || 'default-host-value'; // Fallback for environment variable
     }
-
-
-
 
     const SellerId = parsedCookies.SellerId;
 
