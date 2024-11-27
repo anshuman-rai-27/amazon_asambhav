@@ -241,6 +241,8 @@ export default function InventoryPage() {
 
     const closeDialog = () => {
         setSelectedProduct(null);
+        setResponseData(null)
+        setDemandData(null);
     };
 
     const handelpri = () => {

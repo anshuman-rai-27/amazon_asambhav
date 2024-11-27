@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const apiGatewayBody = {
       body: JSON.stringify({ item_id, city, date, quantity, category ,prediction ,price,sub_category,review}),
     };
-    console.log(apiGatewayBody);
+    // console.log(apiGatewayBody);
 
     // Make the POST request to AWS API Gateway
     const awsResponse = await fetch(
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
     const awsData = await awsResponse.json();
-    console.log('AWS Response:', awsData);
+    // console.log('AWS Response:', awsData);
 
     // Parse the prediction from the AWS response
     const res = JSON.parse(awsData.body).value;
