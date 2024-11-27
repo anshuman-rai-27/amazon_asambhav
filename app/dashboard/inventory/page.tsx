@@ -165,9 +165,10 @@ export default function InventoryPage() {
                     0
                 ) || 50, // Default value
                 category: selectedProduct.productType || "Books", // Default value
+                price:selectedProduct.variants[0].price
             };
 
-            const response = await fetch('/api/ai/demand', {
+            const response = await fetch('/api/ai/price', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ export default function InventoryPage() {
 
             const data = await response.json();
             console.log(data);
-            setDemandData(data.prediction);
+            setDemandData(data.res);
         } catch (error: any) {
             console.error("Error fetching data:", error);
             // setResponseData({ error: "Failed to fetch data" });
@@ -212,7 +213,7 @@ export default function InventoryPage() {
                 price: selectedProduct.variants[0].price
             };
 
-            const response = await fetch('/api/ai/price', {
+            const response = await fetch('/api/ai/demand', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -226,7 +227,7 @@ export default function InventoryPage() {
 
             const data = await response.json();
             console.log(data);
-            setResponseData(data.prediction);
+            setResponseData(data.res);
         } catch (error: any) {
             console.error("Error fetching data:", error);
             // setResponseData({ error: "Failed to fetch data" });
@@ -469,14 +470,14 @@ export default function InventoryPage() {
                                         <p className="text-xl font-bold text-green-600">₹{pri}</p>
                                         
                                     </p> */}
-                                    {pri ? (
+                                    {responseData ? (
                                         <p className="text-xl font-bold">
                                             Best Price to sell:
-                                            <p className="text-xl font-bold text-green-600">₹{pri}</p>
+                                            <p className="text-xl font-bold text-green-600">₹{demandData}</p>
                                         </p>
                                     ) : null}
-                                    {dem?(
-                                    <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {dem}</p> (moderate)</p>
+                                    {demandData?(
+                                    <p>Demand forcast :<p className="text-xl font-bold text-green-600" > {responseData}</p> (moderate)</p>
                                     ):null}
                                 </div>
 
@@ -491,14 +492,14 @@ export default function InventoryPage() {
 
                         <div className="mt-6 flex justify-end gap-4">
                             <Button onClick={() =>
-                                // getPredictedPrice(selectedProduct)
-                                handelpri()
+                                getPredictedPrice(selectedProduct)
+                                // handelpri()
                             } className="bg-blue-500 text-white px-4 py-2 rounded">
                                 Get AI Price
                             </Button>
                             <Button onClick={() =>
-                                // getPredictedDemand(selectedProduct)
-                                handeldem()
+                                getPredictedDemand(selectedProduct)
+                                // handeldem()
                             } className="bg-blue-500 text-white px-4 py-2 rounded">
                                 Get AI Forcast
                             </Button>

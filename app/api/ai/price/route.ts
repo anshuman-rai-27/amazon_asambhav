@@ -75,18 +75,20 @@ export async function POST(request: NextRequest) {
       );
     }
     const quantity=50;
-    const product_id =item_id;
-    const sub_category = 'non-fiction' ;
+    // const product_id =item_id;
+    const sub_category = 'nonfiction' ;
     const review ='moderate' ;
+    const prediction = 1;
     // Create the body for AWS API Gateway
     const apiGatewayBody = {
-      body: JSON.stringify({ product_id, date,price,  category ,sub_category,quantity,review}),
+      body: JSON.stringify({ item_id, date,price, city, category ,sub_category,quantity,review ,prediction}),
     };
+
     console.log(apiGatewayBody);
 
     // Make the POST request to AWS API Gateway
     const awsResponse = await fetch(
-      'https://knfx6gqx53.execute-api.ap-south-1.amazonaws.com/v1/dev',
+      'https://3upgpr9yxb.execute-api.ap-south-1.amazonaws.com/v1',
       {
         method: 'POST',
         headers: {
@@ -109,10 +111,10 @@ export async function POST(request: NextRequest) {
     console.log('AWS Response:', awsData);
 
     // Parse the prediction from the AWS response
-    const prediction = JSON.parse(awsData.body).prediction.trim();
+    const res = JSON.parse(awsData.body).value;
 
     // Respond back to the client
-    return NextResponse.json({ prediction });
+    return NextResponse.json({ res });
   } catch (error) {
     console.error('Error communicating with AWS API Gateway:', error);
     return NextResponse.json(

@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     console.log('Parsed body:', parsedBody);
 
     // Ensure the required fields are present in the parsed body
-    const { item_id, city, date, category } = await parsedBody;
+    const { item_id, city, date, category ,price } = await parsedBody;
     if (!item_id || !city || !date || !category) {
       return NextResponse.json(
         { error: 'Missing required fields in the request body' },
@@ -74,14 +74,19 @@ export async function POST(request: NextRequest) {
       );
     }
     const quantity=50;
+    const prediction = 0;
+    const sub_category = "default"
+    const review = "default"
+    // const price = 100;
     // Create the body for AWS API Gateway
     const apiGatewayBody = {
-      body: JSON.stringify({ item_id, city, date, quantity, category }),
+      body: JSON.stringify({ item_id, city, date, quantity, category ,prediction ,price,sub_category,review}),
     };
+    console.log(apiGatewayBody);
 
     // Make the POST request to AWS API Gateway
     const awsResponse = await fetch(
-      'https://vv95n14v36.execute-api.ap-south-1.amazonaws.com/pd/dev',
+      'https://3upgpr9yxb.execute-api.ap-south-1.amazonaws.com/v1',
       {
         method: 'POST',
         headers: {
@@ -90,6 +95,8 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(apiGatewayBody),
       }
     );
+    
+    // https://vv95n14v36.execute-api.ap-south-1.amazonaws.com/pd/dev
 
     // Handle API Gateway response
     if (!awsResponse.ok) {
@@ -104,10 +111,10 @@ export async function POST(request: NextRequest) {
     console.log('AWS Response:', awsData);
 
     // Parse the prediction from the AWS response
-    const prediction = JSON.parse(awsData.body).prediction.trim();
+    const res = JSON.parse(awsData.body).value;
 
     // Respond back to the client
-    return NextResponse.json({ prediction });
+    return NextResponse.json({ res });
   } catch (error) {
     console.error('Error communicating with AWS API Gateway:', error);
     return NextResponse.json(
