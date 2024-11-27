@@ -18,7 +18,17 @@ export async function GET(request: NextRequest) {
         variants: true,
       },
     });
-    return NextResponse.json(products);
+    // return NextResponse.json(products);
+    // Convert BigInt values to strings
+    const processedProducts = products.map((product) =>
+      JSON.parse(
+        JSON.stringify(product, (key, value) =>
+          typeof value === "bigint" ? value.toString() : value
+        )
+      )
+    );
+
+    return NextResponse.json(processedProducts);
   } catch (error:any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -64,6 +74,7 @@ export async function PATCH(request: NextRequest) {
       where: { id: productId },
       data: updateData,
     });
+
     return NextResponse.json(updatedProduct);
   } catch (error:any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
