@@ -63,6 +63,8 @@
 
 ## Methodology/Architecture Diagram
 **[View Diagram](https://drive.google.com/file/d/1ecn-HXdILDlC7_ECxTXjzZRMFG1biRlU/view?usp=sharing)**  
+![read drawio](https://github.com/user-attachments/assets/2463668f-1a22-4b35-a1a8-eed1923ae94a)
+
 
 ---
 
@@ -85,5 +87,5 @@ Developer Plughin
 ---
 
 ## Instructions
-For detailed installation and setup instructions, please refer to the [README](https://github.com/swaparup36/amazon_asambhav/blob/main/README.md) in the repository.
+
 
