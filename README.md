@@ -1,63 +1,65 @@
-# One Stop Vyapaar - E-commerce Management Platform
+# Onestop Vyapar - AI-Powered E-commerce Platform
 
-## Project Overview
-**Goal:** Empower businesses to leverage Amazon's logistics network for seamless inventory storage and order fulfillment across multiple sales channels with minimal coding.  
+## 🚀 Project Overview
+**Onestop Vyapar** is an AI-driven integration hub designed for small and medium-sized businesses (SMBs). It streamlines e-commerce management by integrating Amazon’s Multi-Channel Fulfillment (MCF) services with a custom marketplace for manufacturers. This platform provides:
 
----
-
-## Key Benefits
-- **AI Chatbot:** Manages backend tasks like inventory, delivery, and ROP handling.  
-- **Amazon MCF Integration:** PAN India logistics without warehouse setup.  
-- **Unified Order Management:** Manage orders from multiple platforms through a single dashboard.  
-- **Real-time Tracking & SLAs:** Provides full order visibility and delivery timelines.  
-- **AI Recommendations:** Inventory and product demand analysis.  
-- **Marketplace for Manufacturers:** Connect sellers with trusted manufacturers.  
-- **Order Verification System:** Reduces cancellation risks with confirmation messages.  
+- Unified inventory and order management.
+- AI-powered inventory suggestions.
+- Dynamic pricing and oversell prevention.
+- Geolocation heatmaps for return rate analysis.
+- International fulfillment and PAN India logistics.
+- Real-time analytics for business optimization.
 
 ---
 
-## How It Works (Example Story: Lakshman the Seller)
-1. **Unified Inventory & Order Management:** Connects Shopify, Facebook Marketplace, and Amazon with MCF.  
-2. **AI Inventory Insights:** Predicts trends and restocking needs using AWS Supply Chain.  
-3. **Dynamic Pricing:** Adjusts prices using PyCaret based on market trends and competitor pricing.  
-4. **Oversell Prevention:** Real-time alerts via AWS Lambda and SNS when inventory is low.  
-5. **Order Confirmation:** AWS Pinpoint verifies orders before dispatch.  
-6. **Return Heatmap:** Identifies high return regions using geolocation data.  
-7. **International Fulfillment:** Uses Amazon's API for seamless global order handling.  
+## 🔧 Technical Stack
 
+### **Frontend**
+- **Framework**: Next.js
+- **Styling**: Tailwind CSS, Material-UI
+
+### **Backend**
+- **Core**: Node.js (Express/NextJS)
+- **APIs**: AWS Lambda, AWS API Gateway
+
+### **DevOps and Infrastructure**
+- **Containerization**: Docker
+- **Orchestration**: AWS ECS, AWS ELB
+- **Storage**: AWS DynamoDB, AWS RDS, AWS S3
+- **Security**: AWS IAM, AWS KMS, AWS Cognito
+
+### **AI/ML Tools**
+- PyCaret
+- AWS Personalize
+- AWS SageMaker
 ---
 
-## Marketplace Features
-- **PAN India Distribution:** Connects local manufacturers with Amazon MCF.  
-- **Dropshipping Network:** Trusted suppliers with Amazon logistics support.  
-- **Quality Checks:** Sample and random product verification.  
-- **Trusted Manufacturer Tag:** Boosts reliable sellers' visibility.  
+## 🎨 Features
 
----
-
-## Security & Trust
-- **User Access Control:** AWS IAM and Cognito.  
-- **Data Encryption:** AWS KMS.  
-- **Secure Authentication:** Amazon Cognito.  
-
----
-
-## Technical Stack
-- **Frontend:** Next.js, Tailwind CSS, Material-UI  
-- **Backend:** Node.js (Express/NestJS), AWS Lambda, AWS API Gateway  
-- **Core Technologies:** Docker, ECS, ELB  
-- **Storage:** DynamoDB, RDS, S3  
-- **Security:** AWS IAM, KMS, Cognito  
-- **AI/ML:** PyCaret, AWS Personalize  
-- **Analytics:** QuickSight, CloudWatch, Redshift  
-- **CI/CD:** GitHub Actions, Docker, AWS CodePipeline  
-
----
-
-## Innovation Highlights
-- **AI-Powered Inventory Optimization:** Real-time stock analysis and predictive restocking.  
-- **Dynamic Pricing:** Adjust prices based on demand using PyCaret models.  
-- **Marketplace for Manufacturers:** Expands seller reach through Amazon MCF.  
+1. **Unified Inventory and Order Management**  
+   - Real-time visibility across multiple platforms.  
+2. **AI-Powered Inventory Suggestions**  
+   - Predictive analytics for stock management.  
+3. **Dynamic Pricing**  
+   - AI-driven pricing adjustments using PyCaret.  
+4. **Oversell Prevention**  
+   - Real-time alerts powered by AWS Lambda and SNS.  
+5. **Geolocation Heatmaps**  
+   - Insights into regions with high return rates.  
+6. **International Fulfillment**  
+   - Simplified global expansion with Amazon APIs.  
+7. **Built-in Marketplace**  
+   - Connects manufacturers, wholesalers, and dropshippers with sellers.  
+8. **DevOps with AWS**  
+   - Leverages AWS ECR, ECS, and S3 for streamlined deployment and scaling.  
+9. **SSL Certificate**  
+   - Secures data transmission with encryption.  
+10. **User-Friendly Interface**  
+    - AI chatbot for inventory and delivery management.  
+11. **Amazon MCF Integration**  
+    - Utilizes Amazon’s PAN India logistics network.  
+12. **Real-Time Analytics**  
+    - AI-driven insights for inventory and pricing optimization.  
 
 ---
 
@@ -73,7 +75,7 @@
 **Deployment Link:** [Vyapaar](https://amazon-asambhav.vercel.app/)  
 ---
 
-## Screenshots and Videos
+## Screenshots
 Dashboard
 ![Screenshot 2024-12-25 162809](https://github.com/user-attachments/assets/b9b59715-e141-4d11-b6a4-801282a9d900)
 
@@ -83,6 +85,9 @@ Marcket Place
 Developer Plughin
 ![Screenshot 2024-12-25 162757](https://github.com/user-attachments/assets/0a0e953f-b17c-4536-8bba-66d1f94e6aa5)
 
+Video demo: 
+
+https://drive.google.com/file/d/1SKISc3E0cgdlxfFlkVR7r6hg2TF7ZQWU/view?usp=drive_link
 
 ---
 
@@ -91,7 +96,7 @@ Developer Plughin
 ### Next.js Setup
 ```bash
 # Clone the repository
-git clone https://github.com/swaparup36/amazon_asambhav.git
+https://github.com/anshuman-rai-27/amazon_asambhav.git
 
 # Install dependencies
 cd amazon_asambhav
