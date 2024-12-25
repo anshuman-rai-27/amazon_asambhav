@@ -90,7 +90,7 @@ Developer Plughin
 
 ### Next.js Setup
 1. Clone the repository:  
-   git clone [https://github.com/swaparup36/amazon_asambhav.git](https://github.com/anshuman-rai-27/amazon_asambhav.git)
+   git clone https://github.com/anshuman-rai-27/amazon_asambhav.git
 
 2. Install dependencies:  
    cd amazon_asambhav
