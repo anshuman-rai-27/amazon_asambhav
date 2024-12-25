@@ -66,28 +66,21 @@
 
 ---
 
-## Open Source Components
-- **Tailwind CSS v3.4.1** - MIT License  
-- **Next.js v13.5.6** - MIT License  
-- **React v18.2.0** - MIT License  
-- **Axios v1.7.7** - MIT License  
-- **GROQ v0.7.0** - MIT License  
-- **Prisma v5.22.0** - Apache License 2.0  
-- **CopilotKit v1.3.15** - MIT License  
-- **Lucide-React v0.274.0** - ISC License  
-
----
-
 ## Demonstration
 **Prototype Demo:** [View Demo](https://drive.google.com/drive/folders/1zgua0Z-7xckWaaR21-l1juH-s15EPIFs?usp=sharing)  
 **Deployment Link:** [Vyapaar](https://amazon-asambhav.vercel.app/)  
-**Source Code:** [GitHub](https://github.com/swaparup36/amazon_asambhav)  
-
 ---
 
 ## Screenshots and Videos
-*Add screenshots of the dashboard, chatbot interface, inventory management, and order processing.*  
-*Embed videos demonstrating core features such as order fulfillment, AI recommendations, and dynamic pricing.*  
+Dashboard
+![Screenshot 2024-12-25 162809](https://github.com/user-attachments/assets/b9b59715-e141-4d11-b6a4-801282a9d900)
+
+Marcket Place
+![Screenshot 2024-12-25 162741](https://github.com/user-attachments/assets/3689f738-3218-4826-b211-799afd1dbd75)
+
+Developer Plughin
+![Screenshot 2024-12-25 162757](https://github.com/user-attachments/assets/0a0e953f-b17c-4536-8bba-66d1f94e6aa5)
+
 
 ---
 
