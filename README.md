@@ -88,4 +88,45 @@ Developer Plughin
 
 ## Instructions
 
+### Next.js Setup
+1. Clone the repository:  
+   git clone [https://github.com/swaparup36/amazon_asambhav.git](https://github.com/anshuman-rai-27/amazon_asambhav.git)
+
+2. Install dependencies:  
+   cd amazon_asambhav
+   npm install
+
+3. Run the development server:  
+   npm run dev
+
+4. Open http://localhost:3000 in your browser.
+
+### Docker Setup
+1. Build the Docker image:  
+   docker build -t vyapaar-app .
+
+2. Run the container:  
+   docker run -p 3000:3000 vyapaar-app
+
+3. Access the application at http://localhost:3000.
+
+### Environment Variables (Example)
+Create a `.env.local` file in the root directory and add the following:  
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+DATABASE_URL=postgres://user:password@localhost:5432/dbname
+NEXT_PUBLIC_USER_POOL_ID=
+NEXT_PUBLIC_USER_POOL_CLIENT_ID=
+KMS_KEY_ID=
+SHOPIFY_API_KEY=
+SHOPIFY_API_SECRET_KEY=
+SCOPES=['write_customers','read_customers', 'write_orders', 'write_products', 'read_orders', 'read_products', 'read_draft_orders']
+DB_USER=
+DB_PASSWORD=
+DB_NAME=postgres
+S3_BUCKET_NAME=
+PINPOINT_PROJECT_ID=
+GROQ_API_KEY=
+
 
