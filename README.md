@@ -1,59 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# One Stop Vyapaar - E-commerce Management Platform
 
-## Getting Started
+## Project Overview
+**Goal:** Empower businesses to leverage Amazon's logistics network for seamless inventory storage and order fulfillment across multiple sales channels with minimal coding.  
 
-First, run the development server
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Benefits
+- **AI Chatbot:** Manages backend tasks like inventory, delivery, and ROP handling.  
+- **Amazon MCF Integration:** PAN India logistics without warehouse setup.  
+- **Unified Order Management:** Manage orders from multiple platforms through a single dashboard.  
+- **Real-time Tracking & SLAs:** Provides full order visibility and delivery timelines.  
+- **AI Recommendations:** Inventory and product demand analysis.  
+- **Marketplace for Manufacturers:** Connect sellers with trusted manufacturers.  
+- **Order Verification System:** Reduces cancellation risks with confirmation messages.  
 
-Docker Installation Process
-1. To build the image
-```bash
-docker build -t amazon-asambhav-app .
-```
-![installwrite](https://github.com/user-attachments/assets/3b199ee9-4643-4303-8033-b27dc2f5cb91)
+---
 
+## How It Works (Example Story: Lakshman the Seller)
+1. **Unified Inventory & Order Management:** Connects Shopify, Facebook Marketplace, and Amazon with MCF.  
+2. **AI Inventory Insights:** Predicts trends and restocking needs using AWS Supply Chain.  
+3. **Dynamic Pricing:** Adjusts prices using PyCaret based on market trends and competitor pricing.  
+4. **Oversell Prevention:** Real-time alerts via AWS Lambda and SNS when inventory is low.  
+5. **Order Confirmation:** AWS Pinpoint verifies orders before dispatch.  
+6. **Return Heatmap:** Identifies high return regions using geolocation data.  
+7. **International Fulfillment:** Uses Amazon's API for seamless global order handling.  
 
-2. To run the image
-```bash
-docker run -p 3000:3000 amazon-asambhav-app
-```
-3. To stop the image
-First -> open another terminal and run docker ps take the container id from their
-```bash
-docker ps
-```
-then 
-```bash
-docker stop <container_id>
-```
-![dockerinstallimg](https://github.com/user-attachments/assets/0faf2d70-bd17-40a2-999d-dc5d23615f6a)
+---
 
+## Marketplace Features
+- **PAN India Distribution:** Connects local manufacturers with Amazon MCF.  
+- **Dropshipping Network:** Trusted suppliers with Amazon logistics support.  
+- **Quality Checks:** Sample and random product verification.  
+- **Trusted Manufacturer Tag:** Boosts reliable sellers' visibility.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Security & Trust
+- **User Access Control:** AWS IAM and Cognito.  
+- **Data Encryption:** AWS KMS.  
+- **Secure Authentication:** Amazon Cognito.  
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Technical Stack
+- **Frontend:** Next.js, Tailwind CSS, Material-UI  
+- **Backend:** Node.js (Express/NestJS), AWS Lambda, AWS API Gateway  
+- **Core Technologies:** Docker, ECS, ELB  
+- **Storage:** DynamoDB, RDS, S3  
+- **Security:** AWS IAM, KMS, Cognito  
+- **AI/ML:** PyCaret, AWS Personalize  
+- **Analytics:** QuickSight, CloudWatch, Redshift  
+- **CI/CD:** GitHub Actions, Docker, AWS CodePipeline  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Innovation Highlights
+- **AI-Powered Inventory Optimization:** Real-time stock analysis and predictive restocking.  
+- **Dynamic Pricing:** Adjust prices based on demand using PyCaret models.  
+- **Marketplace for Manufacturers:** Expands seller reach through Amazon MCF.  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Methodology/Architecture Diagram
+**[View Diagram](https://drive.google.com/file/d/1ecn-HXdILDlC7_ECxTXjzZRMFG1biRlU/view?usp=sharing)**  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Open Source Components
+- **Tailwind CSS v3.4.1** - MIT License  
+- **Next.js v13.5.6** - MIT License  
+- **React v18.2.0** - MIT License  
+- **Axios v1.7.7** - MIT License  
+- **GROQ v0.7.0** - MIT License  
+- **Prisma v5.22.0** - Apache License 2.0  
+- **CopilotKit v1.3.15** - MIT License  
+- **Lucide-React v0.274.0** - ISC License  
+
+---
+
+## Demonstration
+**Prototype Demo:** [View Demo](https://drive.google.com/drive/folders/1zgua0Z-7xckWaaR21-l1juH-s15EPIFs?usp=sharing)  
+**Deployment Link:** [Vyapaar](https://amazon-asambhav.vercel.app/)  
+**Source Code:** [GitHub](https://github.com/swaparup36/amazon_asambhav)  
+
+---
+
+## Screenshots and Videos
+*Add screenshots of the dashboard, chatbot interface, inventory management, and order processing.*  
+*Embed videos demonstrating core features such as order fulfillment, AI recommendations, and dynamic pricing.*  
+
+---
+
+## Instructions
+For detailed installation and setup instructions, please refer to the [README](https://github.com/swaparup36/amazon_asambhav/blob/main/README.md) in the repository.
+
