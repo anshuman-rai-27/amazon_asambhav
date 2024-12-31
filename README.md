@@ -32,6 +32,7 @@
 - PyCaret
 - AWS Personalize
 - AWS SageMaker
+- CopilotKit
 ---
 
 ## 🎨 Features
